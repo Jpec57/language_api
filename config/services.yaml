@@ -23,3 +23,14 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Listener\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+
+    App\Serializer\FormExceptionNormalizer:
+        tags: [ 'serializer.normalizer' ]
+
+    App\Factory\NormalizerFactory:
+        # inject all services tagged with a specific tag: "serializer.normalizer"
+        arguments: [!tagged serializer.normalizer]
+        public: true

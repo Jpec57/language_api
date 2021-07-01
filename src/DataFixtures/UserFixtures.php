@@ -4,6 +4,7 @@
 namespace App\DataFixtures;
 
 
+use App\Entity\ApiToken;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -31,6 +32,9 @@ class UserFixtures extends Fixture
         $manager->persist($user);
         $user
             ->setPassword($this->userPasswordHasher->hashPassword($user, "test"));
+        $manager->flush();
+        $token = new ApiToken($user, "JeSuisUnToken");
+        $manager->persist($token);
         $manager->flush();
         $this->addReference(self::USER_JPEC_REFERENCE, $user);
     }

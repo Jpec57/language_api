@@ -67,9 +67,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $apiTokens;
 
+    /**
+     * @ORM\OneToMany(targetEntity=SRSCard::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $srsCards;
+
     #[Pure] public function __construct()
     {
         $this->apiTokens = new ArrayCollection();
+        $this->srsCards = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -180,5 +186,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         //Use the default hasher
         //https://symfony.com/doc/current/security/named_hashers.html
         return null;
+    }
+
+    /**
+     * @return Collection|SRSCard[]
+     */
+    public function getSrsCards(): Collection
+    {
+        return $this->srsCards;
+    }
+
+    public function addSrsCard(SRSCard $srsCard): self
+    {
+        if (!$this->srsCards->contains($srsCard)) {
+            $this->srsCards[] = $srsCard;
+            $srsCard->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSrsCard(SRSCard $srsCard): self
+    {
+        if ($this->srsCards->removeElement($srsCard)) {
+            // set the owning side to null (unless already changed)
+            if ($srsCard->getUser() === $this) {
+                $srsCard->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

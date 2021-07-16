@@ -10,7 +10,9 @@ use PHPUnit\Framework\TestCase;
 
 class AuthenticationControllerTest extends BaseTestCase
 {
-
+    /**
+     * @group login
+     */
     public function testLoginSuccess(){
         $data = [
             "email"=> "jpec@benkyou.fr",
@@ -21,7 +23,9 @@ class AuthenticationControllerTest extends BaseTestCase
         ]);
         $this->assertEquals(200, $response->getStatusCode());
     }
-
+    /**
+     * @group login
+     */
     public function testLoginError(){
         $data = [
             "email"=> "jpec@benkyou.fr",
@@ -32,7 +36,9 @@ class AuthenticationControllerTest extends BaseTestCase
         ]);
         $this->assertEquals(400, $response->getStatusCode());
     }
-
+    /**
+     * @group register
+     */
     public function testCreateUserSuccess(){
         $data = [
             "email"=> "snouf@benkyou.fr",
@@ -44,7 +50,9 @@ class AuthenticationControllerTest extends BaseTestCase
         ]);
         $this->assertEquals(201, $response->getStatusCode());
     }
-
+    /**
+     * @group register
+     */
     public function testCreateUserDuplicatedUserError(){
         $data = [
             "email"=> "jpec@benkyou.fr",
@@ -56,7 +64,9 @@ class AuthenticationControllerTest extends BaseTestCase
         ]);
         $this->assertEquals(400, $response->getStatusCode());
     }
-
+    /**
+     * @group register
+     */
     public function testCreateUserMissingFieldError(){
         $data = [
             "username"=> "jpec2",
@@ -67,7 +77,9 @@ class AuthenticationControllerTest extends BaseTestCase
         ]);
         $this->assertEquals(400, $response->getStatusCode());
     }
-
+    /**
+     * @group register
+     */
     public function testCreateUserPasswordTooShortError(){
         $data = [
             "username"=> "jpec2",

@@ -7,6 +7,7 @@ use App\Repository\VocabCardRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=VocabCardRepository::class)
@@ -15,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 class VocabCard
 {
     /**
+     * @Groups({"default"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -22,51 +24,61 @@ class VocabCard
     private $id;
 
     /**
+     * @Groups({"default"})
      * @ORM\Column(type="string", length=255)
      */
     private $wordToTranslate;
 
     /**
+     * @Groups({"default"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $englishWord;
 
     /**
+     * @Groups({"default"})
      * @ORM\Column(type="array", nullable=true)
      */
     private $alternativeWritings = [];
 
     /**
+     * @Groups({"default"})
      * @ORM\Column(type="array", nullable=true)
      */
     private $synonyms = [];
 
     /**
+     * @Groups({"default"})
      * @ORM\Column(type="array")
      */
     private $translations = [];
 
     /**
+     * @Groups({"default"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $userNotes;
 
     /**
+     * @Groups({"default"})
      * @ORM\Column(type="string", length=5)
      */
     private $translationLocale;
 
     /**
+     * @Groups({"default"})
      * @ORM\Column(type="string", length=5)
      */
     private $cardLocale;
 
     /**
+     * @Groups({"default"})
      * @ORM\ManyToMany(targetEntity=LanguageLevel::class)
      */
     private $difficultyLevels;
 
     /**
+     * @Groups({"default"})
      * @ORM\ManyToMany(targetEntity=ContextSentence::class, inversedBy="vocabCards")
      */
     private $contextSentences;
@@ -75,6 +87,30 @@ class VocabCard
     {
         $this->difficultyLevels = new ArrayCollection();
         $this->contextSentences = new ArrayCollection();
+    }
+
+    public function createReversedCard(): VocabCard
+    {
+        $reversedCard = new VocabCard();
+        $translations = $this->getTranslations();
+        if (count($translations) < 1){
+            throw new \RuntimeException("You must have at least one translation to reverse your vocab card.");
+        }
+        $reversedTranslations = [$this->getWordToTranslate()];
+        $synonyms = $this->getSynonyms();
+        if ($synonyms){
+            $reversedTranslations = array_merge($reversedTranslations, $synonyms);
+        }
+        $reversedCard
+//            ->setAlternativeWritings([])
+            ->setEnglishWord($this->getEnglishWord())
+            ->setWordToTranslate($translations[0])
+            ->setTranslations($reversedTranslations)
+            ->setSynonyms(array_slice($translations, 1))
+            ->setCardLocale($this->getTranslationLocale())
+            ->setTranslationLocale($this->getCardLocale())
+            ->setUserNotes(null);
+        return $reversedCard;
     }
 
     public function getId(): ?int

@@ -15,4 +15,11 @@ trait TestingTrait
             }
         }
     }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        echo "\nReloading database...\n";
+        exec("php bin/console doctrine:fixtures:load --no-interaction");
+    }
 }

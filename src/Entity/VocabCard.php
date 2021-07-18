@@ -13,15 +13,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=VocabCardRepository::class)
  */
 #[ApiResource]
-class VocabCard
+class VocabCard extends SRSCard
 {
-    /**
-     * @Groups({"default"})
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
     /**
      * @Groups({"default"})
@@ -83,15 +76,17 @@ class VocabCard
      */
     private $contextSentences;
 
-    public function __construct()
+    public function __construct(User $user)
     {
+        parent::__construct();
+        $this->user = $user;
         $this->difficultyLevels = new ArrayCollection();
         $this->contextSentences = new ArrayCollection();
     }
 
     public function createReversedCard(): VocabCard
     {
-        $reversedCard = new VocabCard();
+        $reversedCard = new VocabCard($this->user);
         $translations = $this->getTranslations();
         if (count($translations) < 1){
             throw new \RuntimeException("You must have at least one translation to reverse your vocab card.");
@@ -100,6 +95,9 @@ class VocabCard
         $synonyms = $this->getSynonyms();
         if ($synonyms){
             $reversedTranslations = array_merge($reversedTranslations, $synonyms);
+        }
+        if ($this->alternativeWritings){
+            $reversedTranslations = array_merge($reversedTranslations, $this->alternativeWritings);
         }
         $reversedCard
 //            ->setAlternativeWritings([])

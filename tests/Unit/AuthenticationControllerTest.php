@@ -22,6 +22,8 @@ class AuthenticationControllerTest extends BaseTestCase
             'body' => json_encode($data)
         ]);
         $this->assertEquals(200, $response->getStatusCode());
+        $body = json_decode($response->getBody()->getContents(), true);
+        $this->assertArrayHasKey("token", $body);
     }
     /**
      * @group login
@@ -48,6 +50,8 @@ class AuthenticationControllerTest extends BaseTestCase
         $response = CustomGuzzleWrapper::getInstance()->getClient()->post('/register', [
             'body' => json_encode($data)
         ]);
+        $body = json_decode($response->getBody()->getContents(), true);
+        $this->assertArrayHasKey("token", $body);
         $this->assertEquals(201, $response->getStatusCode());
     }
     /**

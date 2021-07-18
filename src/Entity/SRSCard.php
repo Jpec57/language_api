@@ -3,57 +3,72 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\SRSCardRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
+///** @ORM\MappedSuperclass */
 /**
- * @ORM\Entity(repositoryClass=SRSCardRepository::class)
+ * @ORM\Entity
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="type", type="string")
+ * @ORM\DiscriminatorMap({"vocab_card" = "VocabCard"})
  */
 abstract class SRSCard
 {
     /**
+     * @Groups({"default"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
     /**
+     * @Groups({"default"})
      * @ORM\Column(type="integer")
      */
-    private $level;
+    protected $level;
 
     /**
+     * @Groups({"default"})
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $nextAvailabilityDate;
+    protected $nextAvailabilityDate;
 
     /**
+     * @Groups({"default"})
      * @ORM\Column(type="integer")
      */
-    private $correctCount;
+    protected $correctCount;
 
     /**
+     * @Groups({"default"})
      * @ORM\Column(type="integer")
      */
-    private $errorCount;
+    protected $errorCount;
 
     /**
+     * @Groups({"srscard_user"})
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="srsCards")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
+    protected $user;
 
     /**
+     * @Groups({"srscard_tag"})
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="srsCards")
      */
-    private $tags;
+    protected $tags;
 
     public function __construct()
     {
         $this->tags = new ArrayCollection();
+        $this->level = 0;
+        $this->correctCount = 0;
+        $this->errorCount = 0;
+//        $this->nextAvailabilityDate = null;
     }
 
     public function getId(): ?int

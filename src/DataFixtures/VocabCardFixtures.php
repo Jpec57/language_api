@@ -16,6 +16,8 @@ class VocabCardFixtures extends Fixture implements DependentFixtureInterface
     const CARD_JISHO_REVERSED = "jisho_reversed";
     const CARD_EAT = "eat";
     const CARD_EAT_REVERSED = "eat_reversed";
+    const CARD_SNOUF = "snouf1";
+    const CARD_SNOUF2 = "snouf2";
 
     const EAT_CARD_LEVEL = 3;
     const EAT_CARD_ERROR_COUNT = 0;
@@ -28,6 +30,8 @@ class VocabCardFixtures extends Fixture implements DependentFixtureInterface
     {
         /** @var User $userJpec */
         $userJpec = $this->getReference(UserFixtures::USER_JPEC_REFERENCE);
+        /** @var User $userSnouf */
+        $userSnouf = $this->getReference(UserFixtures::USER_SNOUF_REFERENCE);
         $vocabCard = new VocabCard($userJpec);
         $vocabCard
             ->setEnglishWord("dictionary")
@@ -50,6 +54,7 @@ class VocabCardFixtures extends Fixture implements DependentFixtureInterface
         $manager->persist($reversedCard);
         $this->addReference(self::CARD_JISHO_REVERSED, $reversedCard);
 
+        //TODO Use Mocker
         $vocabCard = new VocabCard($userJpec);
         $vocabCard
             ->setEnglishWord("eat")
@@ -70,6 +75,38 @@ class VocabCardFixtures extends Fixture implements DependentFixtureInterface
         $reversedCard = $vocabCard->createReversedCard();
         $manager->persist($reversedCard);
         $this->addReference(self::CARD_EAT_REVERSED, $reversedCard);
+
+
+        $vocabCard = new VocabCard($userSnouf);
+        $vocabCard
+            ->setEnglishWord("snouf1")
+            ->setWordToTranslate("")
+            ->setAlternativeWritings([])
+            ->setSynonyms([])
+            ->setUserNotes("This is my first vocab card.")
+            ->setTranslations(["食べる", "たべる"])
+            ->setTranslationLocale("ja")
+            ->setCardLocale("en")
+            ->setNextAvailabilityDate(null)
+        ;
+        $manager->persist($vocabCard);
+        $this->addReference(self::CARD_SNOUF, $vocabCard);
+
+        $vocabCard = new VocabCard($userSnouf);
+        $vocabCard
+            ->setEnglishWord("snouf2")
+            ->setWordToTranslate("")
+            ->setAlternativeWritings([])
+            ->setSynonyms([])
+            ->setUserNotes("This is my first vocab card.")
+            ->setTranslations(["食べる", "たべる"])
+            ->setTranslationLocale("ja")
+            ->setCardLocale("en")
+            ->setNextAvailabilityDate(new \DateTime('+2 weeks'))
+        ;
+        $manager->persist($vocabCard);
+        $this->addReference(self::CARD_SNOUF2, $vocabCard);
+
         $manager->flush();
 
     }

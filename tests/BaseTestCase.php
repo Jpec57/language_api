@@ -9,8 +9,6 @@ use PHPUnit\Framework\TestCase;
 
 class BaseTestCase extends TestCase
 {
-    const JPEC_TEST_TOKEN = "JeSuisUnToken";
-
     use TestingTrait;
 //    protected function setUp(): void
 //    {

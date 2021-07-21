@@ -7,6 +7,8 @@ use App\Entity\User;
 use App\Entity\VocabCard;
 use App\Form\SRSReviewType;
 use App\Form\VocabCardType;
+use App\Repository\SRSCardRepository;
+use App\Repository\VocabCardRepository;
 use App\Service\SrsCardService;
 use App\Trait\FormValidationTrait;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,11 +22,23 @@ use Symfony\Component\Routing\Annotation\Route;
 class SRSCardController extends AbstractController
 {
     private SrsCardService $srsCardService;
+    private SRSCardRepository $SRSCardRepository;
     use FormValidationTrait;
 
-    public function __construct(SrsCardService $srsCardService)
+    public function __construct(SrsCardService $srsCardService, SRSCardRepository $SRSCardRepository)
     {
         $this->srsCardService = $srsCardService;
+        $this->SRSCardRepository = $SRSCardRepository;
+    }
+
+    #[Route('/review', name: 'get_review_srs_card', methods: ["GET"])]
+    public function getReviewSRSCardAction(Request $request): Response
+    {
+        /** @var User $viewer */
+        $viewer = $this->getUser();
+        $cards = $this->getDoctrine()->getRepository(VocabCard::class)->findAvailableCards($viewer, new \DateTime());
+
+        return $this->json($cards, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
     }
 
 

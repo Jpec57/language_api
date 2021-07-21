@@ -4,6 +4,7 @@
 namespace App\Tests\Unit;
 
 
+use App\DataFixtures\UserFixtures;
 use App\DataFixtures\VocabCardFixtures;
 use App\Entity\DTO\SRSCardReview;
 use App\Entity\DTO\SRSReview;
@@ -22,18 +23,12 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class SRSCardControllerTest extends KernelTestCase
 {
-    const JPEC_TEST_TOKEN = "JeSuisUnToken";
+
 
     use TestingTrait;
-
     private EntityManagerInterface $entityManager;
     private SrsCardService $srsCardService;
 
-//    public function test__construct(SrsCardService $srsCardService)
-//    {
-//        $this->srsCardService = $srsCardService;
-//
-//    }
 
     protected function setUp(): void
     {
@@ -43,6 +38,7 @@ class SRSCardControllerTest extends KernelTestCase
         $this->entityManager = $kernel->getContainer()
             ->get('doctrine')
             ->getManager();
+        /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $this->srsCardService = $kernel->getContainer()
             ->get('App\Service\SrsCardService');
     }
@@ -121,5 +117,20 @@ class SRSCardControllerTest extends KernelTestCase
 
         $this->entityManager->refresh($eatCard);
         $this->assertSRSCardsAreEquals($expectedEatCard, $eatCard);
+    }
+
+    /**
+     * @group get-review
+     */
+    public function testShouldTakeOnlyAvailableCardsForUser()
+    {
+        $response = CustomGuzzleWrapper::getInstance()->getClient()->get('/srs-cards/review', [
+            "headers" => [
+                'Authorization' => "Bearer " . UserFixtures::SNOUF_TEST_TOKEN
+            ]
+        ]);
+        $body = json_decode($response->getBody()->getContents(), true);
+        $this->assertCount(1, $body);
+        $this->assertEquals('snouf2', $body[0]['englishWord']);
     }
 }

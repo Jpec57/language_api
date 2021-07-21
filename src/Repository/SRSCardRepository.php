@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\SRSCard;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,10 +21,16 @@ class SRSCardRepository extends ServiceEntityRepository
         parent::__construct($registry, SRSCard::class);
     }
 
-    public function findByTypeBuilder(string $type): QueryBuilder
+    public function findAvailableCards(User $user, \DateTime $date)
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.type = :type')
-            ->setParameter('type', $type);
+            ->andWhere('c.nextAvailabilityDate >= :date')
+            ->andWhere('c.user = :user')
+            ->setParameters([
+                'date'=> $date,
+                'user'=> $user,
+            ])
+            ->getQuery()
+            ->getResult();
     }
 }

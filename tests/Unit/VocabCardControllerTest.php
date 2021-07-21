@@ -4,6 +4,7 @@
 namespace App\Tests\Unit;
 
 
+use App\DataFixtures\UserFixtures;
 use App\Singleton\CustomGuzzleWrapper;
 use App\Tests\BaseTestCase;
 use App\Trait\TestingTrait;
@@ -39,7 +40,7 @@ class VocabCardControllerTest extends BaseTestCase
         $response = CustomGuzzleWrapper::getInstance()->getClient()->post('/vocab-cards/', [
             'body' => json_encode($data),
             "headers" => [
-                'Authorization' => "Bearer " . self::JPEC_TEST_TOKEN
+                'Authorization' => "Bearer " . UserFixtures::JPEC_TEST_TOKEN
             ]
         ]);
 

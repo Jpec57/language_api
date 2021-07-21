@@ -162,12 +162,18 @@ abstract class SRSCard
 
     public function handleCardReview(bool $isSuccess){
         $level = $this->level + ($isSuccess ? 1 : -1);
+        if ($level >= SRSLevelEnum::BURNED){
+            $level = SRSLevelEnum::BURNED;
+        } else if ($level <= SRSLevelEnum::NEW){
+            $level = SRSLevelEnum::NEW;
+        }
+        $this->level = $level;
         $diff = SRSLevelEnum::getDateIntervalDifferenceAccordingToLevel($level);
         if ($isSuccess){
             $this->correctCount += 1;
         } else {
             $this->errorCount += 1;
         }
-        $this->nextAvailabilityDate = (new \DateTime())->add($diff);
+        $this->nextAvailabilityDate = (new \DateTime())->modify($diff);
     }
 }

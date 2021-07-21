@@ -9,7 +9,12 @@ class SRSCardReview
 {
     private SRSCard $card;
 
-    private bool $isCorrect;
+    private ?bool $isCorrect;
+
+    public function __construct()
+    {
+        $this->isCorrect = false;
+    }
 
     /**
      * @return bool
@@ -22,9 +27,10 @@ class SRSCardReview
     /**
      * @param bool $isCorrect
      */
-    public function setIsCorrect(bool $isCorrect): void
+    public function setIsCorrect($isCorrect): self
     {
         $this->isCorrect = $isCorrect;
+        return $this;
     }
 
     /**

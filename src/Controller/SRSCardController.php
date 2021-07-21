@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\VocabCard;
 use App\Form\SRSReviewType;
 use App\Form\VocabCardType;
+use App\Service\SrsCardService;
 use App\Trait\FormValidationTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,13 +19,14 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/srs-cards')]
 class SRSCardController extends AbstractController
 {
-    private $entityManager;
+    private SrsCardService $srsCardService;
     use FormValidationTrait;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(SrsCardService $srsCardService)
     {
-        $this->entityManager = $entityManager;
+        $this->srsCardService = $srsCardService;
     }
+
 
     #[Route('/review', name: 'review_srs_card', methods: ["POST"])]
     public function reviewSRSCardAction(Request $request): Response
@@ -32,19 +34,14 @@ class SRSCardController extends AbstractController
         /** @var User $viewer */
         $viewer = $this->getUser();
         $data = json_decode($request->getContent(), true);
-
         $srsReview = new SRSReview($viewer);
         $form = $this->createForm(SRSReviewType::class, $srsReview);
         $form->submit($data);
+
         if ($form->isSubmitted() && !$form->isValid()) {
             return $this->json(['errors' => $this->getErrorsFromForm($form)], JsonResponse::HTTP_BAD_REQUEST);
         }
-        $cardReviews = $srsReview->getCardReviews();
-        foreach ($cardReviews as $cardReview){
-            $card = $cardReview->getCard();
-            $card->handleCardReview($cardReview->isCorrect());
-        }
-        $this->entityManager->flush();
-        return $this->json(null, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
+        $modifiedCards = $this->srsCardService->modifySrsCardsAccordingToReview($srsReview);
+        return $this->json($modifiedCards, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
     }
 }

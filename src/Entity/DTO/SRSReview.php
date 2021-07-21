@@ -21,6 +21,7 @@ class SRSReview
     public function __construct(User $user)
     {
         $this->user = $user;
+        $this->cardReviews = [];
     }
 
     /**

@@ -20,6 +20,6 @@ trait TestingTrait
     {
         parent::setUp();
         echo "\nReloading database...\n";
-        exec("php bin/console doctrine:fixtures:load --no-interaction");
+        exec("php bin/console doctrine:fixtures:load --no-interaction --env=test");
     }
 }

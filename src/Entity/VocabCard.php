@@ -100,6 +100,7 @@ class VocabCard extends SRSCard
             $reversedTranslations = array_merge($reversedTranslations, $this->alternativeWritings);
         }
         $reversedCard
+            ->setLevel(0)
 //            ->setAlternativeWritings([])
             ->setEnglishWord($this->getEnglishWord())
             ->setWordToTranslate($translations[0])

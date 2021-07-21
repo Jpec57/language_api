@@ -34,3 +34,7 @@ services:
         # inject all services tagged with a specific tag: "serializer.normalizer"
         arguments: [!tagged serializer.normalizer]
         public: true
+
+    App\Service\SrsCardService:
+        class: App\Service\SrsCardService
+        public: true

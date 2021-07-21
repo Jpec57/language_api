@@ -17,6 +17,10 @@ class VocabCardFixtures extends Fixture implements DependentFixtureInterface
     const CARD_EAT = "eat";
     const CARD_EAT_REVERSED = "eat_reversed";
 
+    const EAT_CARD_LEVEL = 3;
+    const EAT_CARD_ERROR_COUNT = 0;
+    const EAT_CARD_CORRECT_COUNT = 1;
+
     /**
      * @inheritDoc
      */
@@ -56,9 +60,9 @@ class VocabCardFixtures extends Fixture implements DependentFixtureInterface
             ->setTranslations(["食べる", "たべる"])
             ->setTranslationLocale("ja")
             ->setCardLocale("en")
-            ->setErrorCount(0)
-            ->setCorrectCount(0)
-            ->setLevel(3)
+            ->setErrorCount(self::EAT_CARD_ERROR_COUNT)
+            ->setCorrectCount(self::EAT_CARD_CORRECT_COUNT)
+            ->setLevel(self::EAT_CARD_LEVEL)
             ->setNextAvailabilityDate(null)
         ;
         $manager->persist($vocabCard);

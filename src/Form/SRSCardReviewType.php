@@ -8,6 +8,7 @@ use App\Entity\SRSCard;
 use App\Entity\Tag;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -19,7 +20,9 @@ class SRSCardReviewType extends AbstractType
             ->add('card', EntityType::class, [
                 'class'=> SRSCard::class
             ])
-            ->add('isCorrect')
+            ->add('isCorrect', CheckboxType::class, [
+                'required' => true,
+            ])
         ;
     }
 
@@ -27,6 +30,7 @@ class SRSCardReviewType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => SRSCardReview::class,
+            'csrf_protection' => false,
         ]);
     }
 }

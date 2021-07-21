@@ -43,8 +43,8 @@ class AuthenticationControllerTest extends BaseTestCase
      */
     public function testCreateUserSuccess(){
         $data = [
-            "email"=> "snouf@benkyou.fr",
-            "username"=> "snouf",
+            "email"=> "snouf57@benkyou.fr",
+            "username"=> "snouf57",
             "password"=> "test"
         ];
         $response = CustomGuzzleWrapper::getInstance()->getClient()->post('/register', [

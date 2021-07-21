@@ -5,6 +5,7 @@ namespace App\Tests\Unit;
 
 
 use App\Entity\SRSCard;
+use App\Entity\VocabCard;
 use App\Singleton\CustomGuzzleWrapper;
 use App\Tests\BaseTestCase;
 use App\Trait\TestingTrait;
@@ -37,18 +38,20 @@ class SRSCardControllerTest extends KernelTestCase
      */
     public function testReviewCardSuccess()
     {
-        $cardRepo = $this->entityManager->getRepository(SRSCard::class);
-        $eatCard = $cardRepo->findOneBy(['type'=> 'vocab_card', 'englishWord' => 'eat', 'cardLocale' => 'ja']);
-        $eatReversedCard = $cardRepo->findOneBy(['type'=> 'vocab_card', 'englishWord' => 'eat', 'cardLocale' => 'en']);
+        $cardRepo = $this->entityManager->getRepository(VocabCard::class);
+        $eatCard = $cardRepo->findOneBy(['englishWord' => 'eat', 'cardLocale' => 'ja']);
+        $eatReversedCard = $cardRepo->findOneBy(['englishWord' => 'eat', 'cardLocale' => 'en']);
         $data = [
-            "0" => [
-                "cardId" => $eatCard->getId(),
-                "isCorrect" => false
-            ],
-            "1" => [
-                "cardId" => $eatReversedCard->getId(),
-                "isCorrect" => true
-            ],
+            "cards" => [
+                "0" => [
+                    "card" => $eatCard->getId(),
+                    "isCorrect" => false
+                ],
+                "1" => [
+                    "card" => $eatReversedCard->getId(),
+                    "isCorrect" => true
+                ],
+            ]
         ];
         $response = CustomGuzzleWrapper::getInstance()->getClient()->post('/srs-cards/review/', [
             'body' => json_encode($data),
@@ -73,6 +76,6 @@ class SRSCardControllerTest extends KernelTestCase
                 "correctCount" => 0+1,
                 "errorCount" => 0,
             ],
-        ], $body[0]);
+        ], $body);
     }
 }

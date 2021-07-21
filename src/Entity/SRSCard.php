@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Enum\SRSLevelEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -156,7 +157,17 @@ abstract class SRSCard
     public function removeTag(Tag $tag): self
     {
         $this->tags->removeElement($tag);
-
         return $this;
+    }
+
+    public function handleCardReview(bool $isSuccess){
+        $level = $this->level + ($isSuccess ? 1 : -1);
+        $diff = SRSLevelEnum::getDateIntervalDifferenceAccordingToLevel($level);
+        if ($isSuccess){
+            $this->correctCount += 1;
+        } else {
+            $this->errorCount += 1;
+        }
+        $this->nextAvailabilityDate = (new \DateTime())->add($diff);
     }
 }

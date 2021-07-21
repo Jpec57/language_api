@@ -3,14 +3,14 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\SRSCardRepository;
+use App\Repository\VocabCardRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=SRSCardRepository::class)
+ * @ORM\Entity(repositoryClass=VocabCardRepository::class)
  */
 #[ApiResource]
 class VocabCard extends SRSCard

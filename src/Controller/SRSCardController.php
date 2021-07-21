@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\DTO\SRSReview;
 use App\Entity\User;
 use App\Entity\VocabCard;
+use App\Form\SRSReviewType;
 use App\Form\VocabCardType;
 use App\Trait\FormValidationTrait;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,16 +33,17 @@ class SRSCardController extends AbstractController
         $viewer = $this->getUser();
         $data = json_decode($request->getContent(), true);
 
-//        $vocabCard = new VocabCard($viewer);
-//        $form = $this->createForm(VocabCardType::class, $vocabCard);
-//        $form->submit($data);
-//        if ($form->isSubmitted() && !$form->isValid()) {
-//            return $this->json(['errors' => $this->getErrorsFromForm($form)], JsonResponse::HTTP_BAD_REQUEST);
-//        }
-//        $vocabCard = $form->getData();
-//        $this->entityManager->persist($vocabCard);
-//        $reverseCard = $vocabCard->createReversedCard();
-
+        $srsReview = new SRSReview($viewer);
+        $form = $this->createForm(SRSReviewType::class, $srsReview);
+        $form->submit($data);
+        if ($form->isSubmitted() && !$form->isValid()) {
+            return $this->json(['errors' => $this->getErrorsFromForm($form)], JsonResponse::HTTP_BAD_REQUEST);
+        }
+        $cardReviews = $srsReview->getCardReviews();
+        foreach ($cardReviews as $cardReview){
+            $card = $cardReview->getCard();
+            $card->handleCardReview($cardReview->isCorrect());
+        }
         $this->entityManager->flush();
         return $this->json(null, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
     }

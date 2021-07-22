@@ -11,7 +11,7 @@ use App\Form\VocabCardType;
 use App\Repository\SRSCardRepository;
 use App\Repository\VocabCardRepository;
 use App\Service\SrsCardService;
-use App\Trait\FormValidationTrait;
+use App\Traits\FormValidationTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

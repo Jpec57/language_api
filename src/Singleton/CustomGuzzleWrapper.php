@@ -2,7 +2,7 @@
 
 namespace App\Singleton;
 
-use App\Trait\SingletonTrait;
+use App\Traits\SingletonTrait;
 use GuzzleHttp\Client;
 
 class CustomGuzzleWrapper

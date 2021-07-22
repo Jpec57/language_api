@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use App\Entity\VocabCard;
-use App\Trait\SrsRepositoryTrait;
+use App\Traits\SrsRepositoryTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;

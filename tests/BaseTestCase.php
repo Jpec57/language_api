@@ -4,7 +4,7 @@
 namespace App\Tests;
 
 
-use App\Trait\TestingTrait;
+use App\Traits\TestingTrait;
 use PHPUnit\Framework\TestCase;
 
 class BaseTestCase extends TestCase

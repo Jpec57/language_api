@@ -15,7 +15,7 @@ use App\Enum\SRSLevelEnum;
 use App\Service\SrsCardService;
 use App\Singleton\CustomGuzzleWrapper;
 use App\Tests\BaseTestCase;
-use App\Trait\TestingTrait;
+use App\Traits\TestingTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase;

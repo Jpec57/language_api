@@ -7,7 +7,7 @@ namespace App\Tests\Unit\Controller;
 use App\DataFixtures\UserFixtures;
 use App\Singleton\CustomGuzzleWrapper;
 use App\Tests\BaseTestCase;
-use App\Trait\TestingTrait;
+use App\Traits\TestingTrait;
 use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase;
 

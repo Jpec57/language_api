@@ -62,7 +62,6 @@ class VocabCardControllerTest extends BaseTestCase
             "cardLocale" => "fr",
             "translationLocale" => "ja",
             "level" => 0,
-            "nextAvailabilityDate" => null,
             "correctCount" => 0,
             "errorCount" => 0,
             "user" => [

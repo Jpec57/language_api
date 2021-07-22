@@ -19,10 +19,23 @@ trait SrsRepositoryTrait
             ->getResult();
     }
 
+    public function findAwaitingCards(User $viewer)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.user = :user')
+            ->andWhere('c.isActivated = 0')
+            ->setParameters([
+                'user'=> $viewer,
+            ])
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findOrderedCardSchedule(User $viewer)
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.user = :user')
+            ->andWhere('c.isActivated = 1')
             ->setParameters([
                 'user'=> $viewer,
             ])

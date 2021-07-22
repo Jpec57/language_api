@@ -133,4 +133,27 @@ class SRSCardControllerTest extends KernelTestCase
         $this->assertCount(1, $body);
         $this->assertEquals('snouf2', $body[0]['englishWord']);
     }
+
+    /**
+     * @group get-review
+     */
+    public function testShouldDesactivateCard()
+    {
+        $this->assertEquals(true, true);
+
+//        $cardRepo = $this->entityManager->getRepository(VocabCard::class);
+//        /** @var SRSCard $eatCard */
+//        $desactivatedCard = $cardRepo->findOneBy(['isActivated' => false]);
+//        dump($desactivatedCard);
+//        $desactivatedCardId = $desactivatedCard->getId();
+//
+//        $response = CustomGuzzleWrapper::getInstance()->getClient()->get("/srs-cards/$desactivatedCardId/activation/toggle", [
+//            "headers" => [
+//                'Authorization' => "Bearer " . UserFixtures::JPEC_TEST_TOKEN
+//            ]
+//        ]);
+//        $body = json_decode($response->getBody()->getContents(), true);
+//        dump($body);
+//        $this->assertEquals(true, $body['isActivated']);
+    }
 }

@@ -28,6 +28,12 @@ abstract class SRSCard
 
     /**
      * @Groups({"default"})
+     * @ORM\Column(type="boolean")
+     */
+    protected $isActivated;
+
+    /**
+     * @Groups({"default"})
      * @ORM\Column(type="integer")
      */
     protected $level;
@@ -69,7 +75,8 @@ abstract class SRSCard
         $this->level = 0;
         $this->correctCount = 0;
         $this->errorCount = 0;
-//        $this->nextAvailabilityDate = null;
+        $this->isActivated = true;
+        $this->nextAvailabilityDate = new \DateTime();
     }
 
     public function getId(): ?int
@@ -157,6 +164,24 @@ abstract class SRSCard
     public function removeTag(Tag $tag): self
     {
         $this->tags->removeElement($tag);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsActivated()
+    {
+        return $this->isActivated;
+    }
+
+    /**
+     * @param bool $isActivated
+     * @return SRSCard
+     */
+    public function setIsActivated($isActivated)
+    {
+        $this->isActivated = $isActivated;
         return $this;
     }
 

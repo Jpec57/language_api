@@ -17,22 +17,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/srs-cards')]
 class SRSCardController extends AbstractController
 {
     private SrsCardService $srsCardService;
+    private EntityManagerInterface $entityManager;
     private SRSCardRepository $SRSCardRepository;
     private VocabCardRepository $vocabCardRepo;
 
     use FormValidationTrait;
 
-    public function __construct(SrsCardService $srsCardService, SRSCardRepository $SRSCardRepository, VocabCardRepository$vocabCardRepo)
+    public function __construct(EntityManagerInterface $entityManager, SrsCardService $srsCardService, SRSCardRepository $SRSCardRepository, VocabCardRepository$vocabCardRepo)
     {
         $this->srsCardService = $srsCardService;
         $this->SRSCardRepository = $SRSCardRepository;
         $this->vocabCardRepo = $vocabCardRepo;
+        $this->entityManager = $entityManager;
     }
 
     #[Route('/schedule', name: 'get_srs_card_schedule', methods: ["GET"])]
@@ -41,6 +44,32 @@ class SRSCardController extends AbstractController
         /** @var User $viewer */
         $viewer = $this->getUser();
         $cards = $this->vocabCardRepo->findOrderedCardSchedule($viewer);
+        return $this->json($cards, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
+    }
+
+    #[Route('/{id}/activation/toggle', name: 'toggle_activate_srs_card', methods: ["GET"])]
+    public function toggleActivationSRSCardAction(Request $request, $id): Response
+    {
+        /** @var User $viewer */
+        $viewer = $this->getUser();
+        $card = $this->vocabCardRepo->find($id);
+        if (!$card){
+            return new JsonResponse(['message'=> 'Not found', 404]);
+        }
+        if (!$viewer || $card->getUser()->getId() != $viewer->getId()){
+            throw new UnauthorizedHttpException("You are not allowed to see this.");
+        }
+        $card->setIsActivated(!$card->getIsActivated());
+        $this->entityManager->flush();
+        return $this->json($card, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
+    }
+
+    #[Route('/awaiting', name: 'get_awaiting_srs_card', methods: ["GET"])]
+    public function getAwaitingSRSCardAction(Request $request): Response
+    {
+        /** @var User $viewer */
+        $viewer = $this->getUser();
+        $cards = $this->vocabCardRepo->findAwaitingCards($viewer);
         return $this->json($cards, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
     }
 

@@ -23,6 +23,26 @@ class VocabCardFixtures extends Fixture implements DependentFixtureInterface
     const EAT_CARD_ERROR_COUNT = 0;
     const EAT_CARD_CORRECT_COUNT = 1;
 
+    public function generateBasicCards(ObjectManager $manager, User $user){
+        for ($i = 0; $i < 10; $i++){
+            $vocabCard = new VocabCard($user);
+            $vocabCard
+                ->setEnglishWord("basic$i")
+                ->setWordToTranslate("basic")
+                ->setAlternativeWritings([])
+                ->setSynonyms([])
+                ->setUserNotes("Basic $i")
+                ->setTranslations(["食べる", "たべる"])
+                ->setTranslationLocale("ja")
+                ->setCardLocale("en")
+                ->setIsActivated(false)
+            ;
+            $manager->persist($vocabCard);
+            $this->addReference("basic$i", $vocabCard);
+        }
+
+    }
+
     /**
      * @inheritDoc
      */
@@ -32,6 +52,8 @@ class VocabCardFixtures extends Fixture implements DependentFixtureInterface
         $userJpec = $this->getReference(UserFixtures::USER_JPEC_REFERENCE);
         /** @var User $userSnouf */
         $userSnouf = $this->getReference(UserFixtures::USER_SNOUF_REFERENCE);
+        $this->generateBasicCards($manager, $userJpec);
+
         $vocabCard = new VocabCard($userJpec);
         $vocabCard
             ->setEnglishWord("dictionary")

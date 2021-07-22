@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\DTO\SRSReview;
+use App\Entity\SRSCard;
 use App\Entity\User;
 use App\Entity\VocabCard;
 use App\Form\SRSReviewType;
@@ -23,12 +24,24 @@ class SRSCardController extends AbstractController
 {
     private SrsCardService $srsCardService;
     private SRSCardRepository $SRSCardRepository;
+    private VocabCardRepository $vocabCardRepo;
+
     use FormValidationTrait;
 
-    public function __construct(SrsCardService $srsCardService, SRSCardRepository $SRSCardRepository)
+    public function __construct(SrsCardService $srsCardService, SRSCardRepository $SRSCardRepository, VocabCardRepository$vocabCardRepo)
     {
         $this->srsCardService = $srsCardService;
         $this->SRSCardRepository = $SRSCardRepository;
+        $this->vocabCardRepo = $vocabCardRepo;
+    }
+
+    #[Route('/schedule', name: 'get_srs_card_schedule', methods: ["GET"])]
+    public function getSRSCardScheduleAction(Request $request): Response
+    {
+        /** @var User $viewer */
+        $viewer = $this->getUser();
+        $cards = $this->vocabCardRepo->findOrderedCardSchedule($viewer);
+        return $this->json($cards, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
     }
 
     #[Route('/review', name: 'get_review_srs_card', methods: ["GET"])]
@@ -36,8 +49,7 @@ class SRSCardController extends AbstractController
     {
         /** @var User $viewer */
         $viewer = $this->getUser();
-        $cards = $this->getDoctrine()->getRepository(VocabCard::class)->findAvailableCards($viewer, new \DateTime());
-
+        $cards = $this->vocabCardRepo->findAvailableCards($viewer, new \DateTime());
         return $this->json($cards, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
     }
 

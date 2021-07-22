@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Tests\Unit;
+namespace App\Tests\Unit\Controller;
 
 
 use App\Singleton\CustomGuzzleWrapper;

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use App\Entity\VocabCard;
+use App\Trait\SrsRepositoryTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,21 +17,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class VocabCardRepository extends ServiceEntityRepository
 {
+    use SrsRepositoryTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, VocabCard::class);
     }
 
-    public function findAvailableCards(User $user, \DateTime $date)
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.nextAvailabilityDate >= :date')
-            ->andWhere('c.user = :user')
-            ->setParameters([
-                'date'=> $date,
-                'user'=> $user,
-            ])
-            ->getQuery()
-            ->getResult();
-    }
 }

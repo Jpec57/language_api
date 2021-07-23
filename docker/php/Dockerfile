@@ -24,7 +24,8 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php -r "unlink('composer-setup.php');" \
     && mv composer /usr/local/bin/composer
 
-RUN composer global require hirak/prestissimo
+#RUN composer global require hirak/prestissimo
+COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 WORKDIR /usr/src/app
 

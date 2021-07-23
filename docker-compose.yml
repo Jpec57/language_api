@@ -1,4 +1,4 @@
-version:  '3.3'
+version: '3.8'
 services:
   php:
     container_name: language_learning
@@ -9,7 +9,7 @@ services:
       - ./:/usr/src/app
     restart: on-failure
     env_file:
-      - .env
+      - .env.local
     # This statement is used to tell the service that it will have to use the user with uid 1000 and gid 1000 internally.
     # In most cases, the user we use on our local machine is the user with uid 1000 and gid 1000.
     user: 1000:1000
@@ -30,7 +30,7 @@ services:
       - "3307:3306"
   nginx:
     image: nginx:1.15.3-alpine
-    container_name: expelliar_web_container
+    container_name: language_learning_web_container
     restart: on-failure
     volumes:
       - './public/:/usr/src/app'

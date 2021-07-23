@@ -27,7 +27,7 @@ services:
     env_file:
       - .env
     ports:
-      - "3307:3306"
+      - "3342:3306"
   nginx:
     image: nginx:1.15.3-alpine
     container_name: language_learning_web_container

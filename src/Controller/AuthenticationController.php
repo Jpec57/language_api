@@ -28,7 +28,7 @@ class AuthenticationController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/login', name: 'login')]
+    #[Route('/login', name: 'login', methods: ["POST"])]
     public function loginAction(Request $request, UserPasswordHasherInterface $passwordEncoder): Response
     {
         $data = json_decode($request->getContent(), true);
@@ -61,7 +61,7 @@ class AuthenticationController extends AbstractController
     }
 
 
-    #[Route('/register', name: 'create_user')]
+    #[Route('/register', name: 'create_user', methods: ["POST"])]
     public function createUser(Request $request, UserPasswordHasherInterface $passwordEncoder): JsonResponse
     {
         $data = json_decode($request->getContent(), true);

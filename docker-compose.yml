@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   php:
-    container_name: language_learning
+    container_name: ll_app
     build:
       context: .
       dockerfile: docker/php/Dockerfile
@@ -15,11 +15,11 @@ services:
     user: 1000:1000
   language_mysql:
     image: mysql:8.0
-    container_name: language_learning_db_container
+    container_name: ll_db
     restart: on-failure
 
     volumes:
-      - language_learning_db:/var/lib/mysql
+      - ll_db:/var/lib/mysql
     environment:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -30,7 +30,7 @@ services:
       - "3342:3306"
   nginx:
     image: nginx:1.15.3-alpine
-    container_name: language_learning_web_container
+    container_name: ll_web
     restart: on-failure
     volumes:
       - './public/:/usr/src/app'
@@ -40,4 +40,4 @@ services:
     ports:
       - 8057:80
 volumes:
-  language_learning_db:
+  ll_db:

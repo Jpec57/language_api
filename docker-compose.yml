@@ -21,7 +21,6 @@ services:
 #    volumes:
 #      - ll_db:/var/lib/mysql
     environment:
-      MYSQL_USER: ${MYSQL_USER}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     env_file:
@@ -61,7 +60,6 @@ services:
 #    volumes:
 #      - test_ll_db:/var/lib/mysql
 #    environment:
-#      MYSQL_USER: ${MYSQL_USER}
 #      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 #      MYSQL_DATABASE: ${MYSQL_DATABASE}
 #    env_file:

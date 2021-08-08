@@ -13,7 +13,7 @@ services:
     # This statement is used to tell the service that it will have to use the user with uid 1000 and gid 1000 internally.
     # In most cases, the user we use on our local machine is the user with uid 1000 and gid 1000.
     user: 1000:1000
-  language_mysql:
+  ll_dbc:
     image: mysql:5.7
     container_name: ll_dbc
     restart: on-failure

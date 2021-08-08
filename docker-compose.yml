@@ -14,20 +14,21 @@ services:
     # In most cases, the user we use on our local machine is the user with uid 1000 and gid 1000.
     user: 1000:1000
   language_mysql:
-    image: mysql:8.0
+    image: mysql:5.7
     container_name: ll_dbc
     restart: on-failure
 
-    volumes:
-      - ll_db:/var/lib/mysql
+#    volumes:
+#      - ll_db:/var/lib/mysql
     environment:
       MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     env_file:
       - .env
     ports:
-      - "3342:3306"
+      - "5500:3306"
   nginx:
     image: nginx:1.15.3-alpine
     container_name: ll_web

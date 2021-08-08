@@ -27,8 +27,7 @@ services:
     env_file:
       - .env
     ports:
-      - '3306'
-#      - "3342:3306"
+      - "3342:3306"
   nginx:
     image: nginx:1.15.3-alpine
     container_name: ll_web

@@ -13,13 +13,15 @@ services:
     # This statement is used to tell the service that it will have to use the user with uid 1000 and gid 1000 internally.
     # In most cases, the user we use on our local machine is the user with uid 1000 and gid 1000.
     user: 1000:1000
+    networks:
+      - dev
   ll_dbc:
     image: mysql:5.7
     container_name: ll_dbc
     restart: on-failure
 
-#    volumes:
-#      - ll_db:/var/lib/mysql
+    volumes:
+      - ll_db:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -27,6 +29,21 @@ services:
       - .env
     ports:
       - "5500:3306"
+    networks:
+      - dev
+#  phpmyadmin:
+#    image: phpmyadmin
+#    container_name: phpmyadmin_docker_symfony
+#    restart: always
+#    depends_on:
+#      - db
+#    ports:
+#      - 8080:80
+#    environment:
+#      PMA_HOST: db
+#    networks:
+#      - dev
+
   nginx:
     image: nginx:1.15.3-alpine
     container_name: ll_web
@@ -52,6 +69,8 @@ services:
     # This statement is used to tell the service that it will have to use the user with uid 1000 and gid 1000 internally.
     # In most cases, the user we use on our local machine is the user with uid 1000 and gid 1000.
     user: 1000:1000
+    networks:
+      - dev
 #  test_language_mysql:
 #    image: mysql:8.0
 #    container_name: test_ll_dbc
@@ -77,6 +96,7 @@ services:
       - test_php
     ports:
       - 8091:80
+networks:
+  dev:
 volumes:
   ll_db:
-#  test_ll_db:

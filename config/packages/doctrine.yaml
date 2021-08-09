@@ -1,9 +1,9 @@
 doctrine:
     dbal:
-        url: '%env(resolve:DATABASE_URL)%'
+#        url: '%env(resolve:DATABASE_URL)%'
         connections:
             default:
-                dbname: 'language'
+#                dbname: 'language'
                 user: 'root'
                 password: 'root'
                 host: 'll_dbc'

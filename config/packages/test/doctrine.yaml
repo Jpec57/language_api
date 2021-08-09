@@ -2,3 +2,9 @@ doctrine:
     dbal:
         # "TEST_TOKEN" is typically set by ParaTest
         dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+#        connections:
+#            default:
+#                dbname: 'language'
+#                user: 'root'
+#                password: 'root'
+#                host: 'll_dbc'

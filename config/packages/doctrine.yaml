@@ -7,7 +7,7 @@ doctrine:
                 user: 'root'
                 password: 'root'
                 host: 'll_dbc'
-        unix_socket: /var/run/mysqld/mysqld.sock
+#        unix_socket: /var/run/mysqld/mysqld.sock
         #/var/run/mysqld/mysqld.sock
 
         # IMPORTANT: You MUST configure your server version,

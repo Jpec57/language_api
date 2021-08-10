@@ -40,7 +40,7 @@ class AuthenticationController extends AbstractController
         $user = $this->userRepository->findOneBy(['email' => $email]);
         if (!$user) {
             return $this->json([
-                'message' => "Bad credentials.",
+                'message' => "No user with email $email ($password).",
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
         $isValid = $passwordEncoder->isPasswordValid($user, $password);

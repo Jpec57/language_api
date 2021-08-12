@@ -6,7 +6,7 @@ doctrine:
                 dbname: 'language'
                 user: 'root'
                 password: 'root'
-                host: 'll_dbc'
+#                host: 'll_dbc'
 #        unix_socket: /var/run/mysqld/mysqld.sock
         #/var/run/mysqld/mysqld.sock
 

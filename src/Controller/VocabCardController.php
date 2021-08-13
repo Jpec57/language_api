@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\VocabCard;
 use App\Form\VocabCardType;
+use App\Repository\SRSCardRepository;
 use App\Repository\VocabCardRepository;
 use App\Traits\FormValidationTrait;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,12 +20,14 @@ class VocabCardController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
     private VocabCardRepository $vocabCardRepository;
+    private SRSCardRepository $SRSCardRepository;
     use FormValidationTrait;
 
-    public function __construct(EntityManagerInterface $entityManager, VocabCardRepository $vocabCardRepository)
+    public function __construct(EntityManagerInterface $entityManager, VocabCardRepository $vocabCardRepository, SRSCardRepository $SRSCardRepository)
     {
         $this->entityManager = $entityManager;
         $this->vocabCardRepository = $vocabCardRepository;
+        $this->SRSCardRepository = $SRSCardRepository;
     }
 
     #[Route('/', name: 'create_vocab_card', methods: ["POST"])]
@@ -54,6 +57,17 @@ class VocabCardController extends AbstractController
         /** @var User $viewer */
         $viewer = $this->getUser();
         $vocabCards = $this->vocabCardRepository->findBy(['user'=> $viewer], ['cardLocale' => "ASC", 'wordToTranslate' => 'ASC']);
+        return $this->json($vocabCards, JsonResponse::HTTP_OK, [], ['groups' => ['default', 'srscard_user', 'srscard_tag']]);
+    }
+
+    #[Route('/search', name: 'list_vocab_card2', methods: ["GET"])]
+    public function listCards2(Request $request): Response
+    {
+        /** @var User $viewer */
+        $viewer = $this->getUser();
+        $limit = $request->get('limit');
+        $page = $request->get('page');
+        $vocabCards = $this->SRSCardRepository->searchCards($viewer, null, $page, $limit);
         return $this->json($vocabCards, JsonResponse::HTTP_OK, [], ['groups' => ['default', 'srscard_user', 'srscard_tag']]);
     }
 }

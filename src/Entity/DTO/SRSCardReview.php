@@ -9,27 +9,28 @@ class SRSCardReview
 {
     private SRSCard $card;
 
-    private ?bool $isCorrect;
+    private int $errorCount;
 
     public function __construct()
     {
-        $this->isCorrect = false;
+        $this->errorCount = 0;
     }
 
     /**
-     * @return bool
+     * @return int
      */
-    public function isCorrect(): bool
+    public function getErrorCount(): int
     {
-        return $this->isCorrect;
+        return $this->errorCount;
     }
 
     /**
-     * @param bool $isCorrect
+     * @param int $errorCount
+     * @return SRSCardReview
      */
-    public function setIsCorrect($isCorrect): self
+    public function setErrorCount($errorCount): SRSCardReview
     {
-        $this->isCorrect = $isCorrect;
+        $this->errorCount = $errorCount;
         return $this;
     }
 

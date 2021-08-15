@@ -22,7 +22,7 @@ class SrsCardService
         $modifiedCards = [];
         foreach ($cardReviews as $cardReview){
             $card = $cardReview->getCard();
-            $card->handleCardReview($cardReview->isCorrect());
+            $card->handleCardReview($cardReview->getErrorCount());
             $modifiedCards[] = $card;
         }
         $this->entityManager->flush();

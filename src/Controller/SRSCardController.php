@@ -38,8 +38,8 @@ class SRSCardController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/schedule', name: 'get_srs_card_schedule', methods: ["GET"])]
-    public function getSRSCardScheduleAction(Request $request): Response
+    #[Route('/scheduled', name: 'get_scheduled_srs_card', methods: ["GET"])]
+    public function getSRSCardScheduledAction(Request $request): Response
     {
         /** @var User $viewer */
         $viewer = $this->getUser();

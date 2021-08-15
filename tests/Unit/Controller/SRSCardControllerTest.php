@@ -79,8 +79,8 @@ class SRSCardControllerTest extends KernelTestCase
 
         $review = new SRSReview($user);
         $review->setCardReviews([
-            ((new SRSCardReview())->setCard($eatCard))->setIsCorrect(true),
-            ((new SRSCardReview())->setCard($eatReversedCard))->setIsCorrect(false),
+            ((new SRSCardReview())->setCard($eatCard))->setErrorCount(0),
+            ((new SRSCardReview())->setCard($eatReversedCard))->setErrorCount(1),
         ]);
         $this->srsCardService->modifySrsCardsAccordingToReview($review);
 
@@ -111,7 +111,7 @@ class SRSCardControllerTest extends KernelTestCase
 
         $review = new SRSReview($user);
         $review->setCardReviews([
-            ((new SRSCardReview())->setCard($eatCard))->setIsCorrect(true),
+            ((new SRSCardReview())->setCard($eatCard))->setErrorCount(0),
         ]);
         $this->srsCardService->modifySrsCardsAccordingToReview($review);
 

@@ -185,7 +185,8 @@ abstract class SRSCard
         return $this;
     }
 
-    public function handleCardReview(bool $isSuccess){
+    public function handleCardReview(int $errorCount){
+        $isSuccess = $errorCount == 0;
         $level = $this->level + ($isSuccess ? 1 : -1);
         if ($level >= SRSLevelEnum::BURNED){
             $level = SRSLevelEnum::BURNED;

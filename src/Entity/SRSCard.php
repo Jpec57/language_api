@@ -28,9 +28,9 @@ abstract class SRSCard
 
     /**
      * @Groups({"default"})
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default":"1"})
      */
-    protected $isActivated;
+    protected $isActivated = true;
 
     /**
      * @Groups({"default"})

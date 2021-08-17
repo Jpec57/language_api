@@ -9,7 +9,7 @@ services:
       - ./:/usr/src/app
     restart: on-failure
     env_file:
-      - .env
+      - .env.local
     # This statement is used to tell the service that it will have to use the user with uid 1000 and gid 1000 internally.
     # In most cases, the user we use on our local machine is the user with uid 1000 and gid 1000.
     user: 1000:1000
@@ -24,7 +24,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     env_file:
-      - .env
+      - .env.local
     ports:
       - "5500:3306"
 

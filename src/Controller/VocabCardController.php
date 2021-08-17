@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Tag;
 use App\Entity\User;
 use App\Entity\VocabCard;
 use App\Form\VocabCardType;
@@ -42,6 +43,7 @@ class VocabCardController extends AbstractController
         if ($form->isSubmitted() && !$form->isValid()) {
             return $this->json(['errors' => $this->getErrorsFromForm($form)], JsonResponse::HTTP_BAD_REQUEST);
         }
+        /** @var VocabCard $vocabCard */
         $vocabCard = $form->getData();
         $this->entityManager->persist($vocabCard);
         $reverseCard = $vocabCard->createReversedCard();

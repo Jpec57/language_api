@@ -34,6 +34,12 @@ class Tag
      */
     private $srsCards;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tags")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
     public function __construct()
     {
         $this->srsCards = new ArrayCollection();
@@ -91,6 +97,18 @@ class Tag
         if ($this->srsCards->removeElement($srsCard)) {
             $srsCard->removeTag($this);
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

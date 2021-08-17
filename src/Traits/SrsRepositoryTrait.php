@@ -9,7 +9,7 @@ trait SrsRepositoryTrait
     public function findAvailableCards(User $user, \DateTime $date)
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.nextAvailabilityDate >= :date')
+            ->andWhere('c.nextAvailabilityDate <= :date')
             ->andWhere('c.user = :user')
             ->setParameters([
                 'date'=> $date,

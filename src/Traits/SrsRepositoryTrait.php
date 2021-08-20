@@ -6,6 +6,21 @@ use App\Entity\User;
 
 trait SrsRepositoryTrait
 {
+
+    public function findAvailableCardCount(User $user, \DateTime $date)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('COUNT(c.id) as count')
+            ->andWhere('c.nextAvailabilityDate <= :date')
+            ->andWhere('c.user = :user')
+            ->setParameters([
+                'date'=> $date,
+                'user'=> $user,
+            ])
+            ->getQuery()
+            ->getSingleResult();
+    }
+
     public function findAvailableCards(User $user, \DateTime $date)
     {
         return $this->createQueryBuilder('c')

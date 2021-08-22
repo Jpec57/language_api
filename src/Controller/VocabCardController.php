@@ -7,7 +7,9 @@ use App\Entity\User;
 use App\Entity\VocabCard;
 use App\Form\VocabCardType;
 use App\Repository\SRSCardRepository;
+use App\Repository\TagRepository;
 use App\Repository\VocabCardRepository;
+use App\Service\TagService;
 use App\Traits\FormValidationTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,14 +24,17 @@ class VocabCardController extends AbstractController
     private EntityManagerInterface $entityManager;
     private VocabCardRepository $vocabCardRepository;
     private SRSCardRepository $SRSCardRepository;
+    private TagService $tagService;
     use FormValidationTrait;
 
-    public function __construct(EntityManagerInterface $entityManager, VocabCardRepository $vocabCardRepository, SRSCardRepository $SRSCardRepository)
+    public function __construct(TagService $tagService, EntityManagerInterface $entityManager, VocabCardRepository $vocabCardRepository, SRSCardRepository $SRSCardRepository)
     {
         $this->entityManager = $entityManager;
         $this->vocabCardRepository = $vocabCardRepository;
         $this->SRSCardRepository = $SRSCardRepository;
+        $this->tagService = $tagService;
     }
+
 
     #[Route('/', name: 'create_vocab_card', methods: ["POST"])]
     public function createCard(Request $request): Response
@@ -37,6 +42,7 @@ class VocabCardController extends AbstractController
         /** @var User $viewer */
         $viewer = $this->getUser();
         $data = json_decode($request->getContent(), true);
+        $tags = array_key_exists('tags', $data) ? $data["tags"] : [];
         $vocabCard = new VocabCard($viewer);
         $form = $this->createForm(VocabCardType::class, $vocabCard);
         $form->submit($data);
@@ -45,6 +51,8 @@ class VocabCardController extends AbstractController
         }
         /** @var VocabCard $vocabCard */
         $vocabCard = $form->getData();
+        $associatedTags = $this->tagService->getOrCreateTagFromLabels($viewer, $tags);
+        $vocabCard->setTags($associatedTags);
         $this->entityManager->persist($vocabCard);
         $reverseCard = $vocabCard->createReversedCard();
         $this->entityManager->persist($reverseCard);

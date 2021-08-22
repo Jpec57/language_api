@@ -73,6 +73,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $srsCards;
 
     /**
+     * @Groups({"tag"})
      * @ORM\OneToMany(targetEntity=Tag::class, mappedBy="user", orphanRemoval=true)
      */
     private $tags;

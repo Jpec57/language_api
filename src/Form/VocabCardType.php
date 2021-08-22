@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\ContextSentence;
 use App\Entity\LanguageLevel;
+use App\Entity\Tag;
 use App\Entity\VocabCard;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -18,6 +19,11 @@ class VocabCardType extends AbstractType
     {
         $builder
             ->add('wordToTranslate')
+//            ->add('tags', CollectionType::class, [
+//                'entry_type' => Tag::class,
+//                'allow_add' => true,
+//                'allow_delete' => true,
+//            ])
             ->add('englishWord')
             ->add('alternativeWritings', CollectionType::class, [
                 'entry_type' => TextType::class,
@@ -53,6 +59,7 @@ class VocabCardType extends AbstractType
         $resolver->setDefaults([
             'data_class' => VocabCard::class,
             'csrf_protection' => false,
+            'allow_extra_fields' => true
         ]);
     }
 

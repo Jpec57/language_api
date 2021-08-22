@@ -107,6 +107,7 @@ class VocabCard extends SRSCard
             ->setTranslations($reversedTranslations)
             ->setSynonyms(array_slice($translations, 1))
             ->setCardLocale($this->getTranslationLocale())
+            ->setTags($this->getTags())
             ->setTranslationLocale($this->getCardLocale())
             ->setUserNotes(null);
         return $reversedCard;

@@ -147,9 +147,18 @@ abstract class SRSCard
     /**
      * @return Collection|Tag[]
      */
-    public function getTags(): Collection
+    public function getTags()
     {
         return $this->tags;
+    }
+
+    /**
+     * @return Collection|Tag[]
+     */
+    public function setTags($tags): self
+    {
+        $this->tags = $tags;
+        return $this;
     }
 
     public function addTag(Tag $tag): self

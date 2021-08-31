@@ -21,7 +21,7 @@ class SRSCardRepository extends ServiceEntityRepository
         parent::__construct($registry, SRSCard::class);
     }
 
-    public function findByTag(User $viewer, string $tag, bool $onlyToReview = false)
+    public function findByTag(int $tag, User $viewer, bool $onlyToReview = false, array $locales = [])
     {
         $params = [
             'userId' => $viewer,
@@ -35,6 +35,11 @@ class SRSCardRepository extends ServiceEntityRepository
         if ($onlyToReview){
             $params['date'] = new \DateTime();
             $qb = $qb->andWhere('c.nextAvailabilityDate <= :date');
+        }
+        if (!empty($locales)){
+            $params['locales'] = $locales;
+            $params['locales2'] = $locales;
+            $qb = $qb->andWhere('c.cardLocale IN (:locales) OR c.translationLocale IN (:locales)');
         }
         $qb = $qb
             ->setParameters($params);

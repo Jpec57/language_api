@@ -45,7 +45,8 @@ class SRSCardController extends AbstractController
     {
         /** @var User $viewer */
         $viewer = $this->getUser();
-        $cards = $this->SRSCardRepository->findByTag($viewer, $tagId, true);
+        $locales = $request->get('locales', []);
+        $cards = $this->SRSCardRepository->findByTag($tagId, $viewer, true, $locales);
         return $this->json($cards, JsonResponse::HTTP_OK, [], ['groups' => ['default', 'srscard_tag']]);
     }
     
@@ -89,7 +90,8 @@ class SRSCardController extends AbstractController
     {
         /** @var User $viewer */
         $viewer = $this->getUser();
-        $cards = $this->vocabCardRepo->findAwaitingCards($viewer);
+        $locales = $request->get('locales', []);
+        $cards = $this->vocabCardRepo->findAwaitingCards($viewer, $locales);
         return $this->json($cards, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
     }
 
@@ -98,7 +100,8 @@ class SRSCardController extends AbstractController
     {
         /** @var User $viewer */
         $viewer = $this->getUser();
-        $cards = $this->vocabCardRepo->findAvailableCards($viewer, new \DateTime());
+        $locales = $request->get('locales', []);
+        $cards = $this->vocabCardRepo->findAvailableCards($viewer, new \DateTime(), $locales);
         return $this->json($cards, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
     }
 
@@ -107,7 +110,8 @@ class SRSCardController extends AbstractController
     {
         /** @var User $viewer */
         $viewer = $this->getUser();
-        $cards = $this->vocabCardRepo->findAvailableCardCount($viewer, new \DateTime());
+        $locales = $request->get('locales', []);
+        $cards = $this->vocabCardRepo->findAvailableCardCount($viewer, new \DateTime(), $locales);
         return $this->json($cards, JsonResponse::HTTP_OK);
     }
 

@@ -9,6 +9,7 @@ use App\Entity\VocabCard;
 use App\Form\SRSReviewType;
 use App\Form\VocabCardType;
 use App\Repository\SRSCardRepository;
+use App\Repository\TagRepository;
 use App\Repository\VocabCardRepository;
 use App\Service\SrsCardService;
 use App\Traits\FormValidationTrait;
@@ -36,6 +37,25 @@ class SRSCardController extends AbstractController
         $this->SRSCardRepository = $SRSCardRepository;
         $this->vocabCardRepo = $vocabCardRepo;
         $this->entityManager = $entityManager;
+    }
+
+
+    #[Route('/tagged/{tagId}', name: 'get_tagged_srs_card', methods: ["GET"])]
+    public function getTaggedSRSCardAction(Request $request, int $tagId): Response
+    {
+        /** @var User $viewer */
+        $viewer = $this->getUser();
+        $cards = $this->SRSCardRepository->findByTag($viewer, $tagId, true);
+        return $this->json($cards, JsonResponse::HTTP_OK, [], ['groups' => ['default', 'srscard_tag']]);
+    }
+    
+    #[Route('/scheduled/lang/{languageCode}', name: 'get_scheduled_srs_card_by_lang', methods: ["GET"])]
+    public function getSRSCardScheduledByLangAction(Request $request, $languageCode): Response
+    {
+        /** @var User $viewer */
+        $viewer = $this->getUser();
+        $cards = $this->vocabCardRepo->findOrderedCardSchedule($viewer);
+        return $this->json($cards, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
     }
 
     #[Route('/scheduled', name: 'get_scheduled_srs_card', methods: ["GET"])]

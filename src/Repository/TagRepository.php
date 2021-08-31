@@ -19,32 +19,27 @@ class TagRepository extends ServiceEntityRepository
         parent::__construct($registry, Tag::class);
     }
 
-    // /**
-    //  * @return Tag[] Returns an array of Tag objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    
+    public function findCardCountByTagAndUser(int $userId, bool $onlyToReview = false)
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
+        $params = [
+            'userId' => $userId,
+        ];
+        $qb = $this->createQueryBuilder('t')
+            ->select('t.id, t.label, COUNT(c) as count')
+            ->innerJoin('t.user', 'u')
+            ->innerJoin('t.srsCards', 'c')
+            ->andWhere('u.id = :userId');
+        if ($onlyToReview){
+            $params['date'] = new \DateTime();
+            $qb = $qb->andWhere('c.nextAvailabilityDate <= :date');
+        }
+        $qb = $qb
+            ->setParameters($params)
+            ->groupBy('t.id')
+            ->orderBy('t.label', 'ASC');
+        return $qb->getQuery()
             ->getResult()
         ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Tag
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

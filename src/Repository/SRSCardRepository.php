@@ -21,6 +21,26 @@ class SRSCardRepository extends ServiceEntityRepository
         parent::__construct($registry, SRSCard::class);
     }
 
+    public function findByTag(User $viewer, string $tag, bool $onlyToReview = false)
+    {
+        $params = [
+            'userId' => $viewer,
+            'tags' => [$tag]
+        ];
+        $qb = $this->createQueryBuilder('c')
+            ->leftJoin('c.user', 'u')
+            ->andWhere('u.id = :userId')
+            ->innerJoin('c.tags','tags')
+            ->andWhere('tags IN (:tags)');
+        if ($onlyToReview){
+            $params['date'] = new \DateTime();
+            $qb = $qb->andWhere('c.nextAvailabilityDate <= :date');
+        }
+        $qb = $qb
+            ->setParameters($params);
+        return $qb->getQuery()->getResult();
+    }
+
 
     public function searchCards(User $viewer, ?string $type = null, int $page = 0, int $limit = 10)
     {
@@ -36,8 +56,6 @@ class SRSCardRepository extends ServiceEntityRepository
 
         $qb
             ->setParameters($params)
-//            ->orderBy("c.cardLocale", "ASC")
-//            ->addOrderBy("c.wordToTranslate", "ASC")
             ->setFirstResult($page * $limit)
             ->setMaxResults($limit);
         return $qb->getQuery()->getResult();

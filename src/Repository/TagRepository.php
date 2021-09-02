@@ -26,7 +26,7 @@ class TagRepository extends ServiceEntityRepository
             'userId' => $userId,
         ];
         $qb = $this->createQueryBuilder('t')
-            ->select('t.id, t.label, COUNT(c) as count')
+            ->select('t as tag, COUNT(c) as count')
             ->innerJoin('t.user', 'u')
             ->innerJoin('t.srsCards', 'c')
             ->andWhere('u.id = :userId');

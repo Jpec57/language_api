@@ -34,8 +34,7 @@ class TagController extends AbstractController
     {
         /** @var User $viewer */
         $viewer = $this->getUser();
-        $tags = $viewer->getTags();
-        $cards = $this->tagRepository->findCardCountByTagAndUser($viewer->getId(), true);
-        return $this->json($cards, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
+        $tags = $this->tagRepository->findCardCountByTagAndUser($viewer->getId(), true);
+        return $this->json($tags, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
     }
 }

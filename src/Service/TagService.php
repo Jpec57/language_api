@@ -25,6 +25,9 @@ class TagService
     public function getOrCreateTagFromLabels(User $viewer, array $tags): array
     {
         $tags = array_unique($tags);
+        if (empty($tags)){
+            $tags = ["default"];
+        }
         /** @var Tag[] $existingTags */
         $existingTags = $this->entityManager->getRepository(Tag::class)
             ->findBy(['label' => $tags, 'user' => $viewer]);

@@ -38,3 +38,9 @@ services:
     App\Service\SrsCardService:
         class: App\Service\SrsCardService
         public: true
+
+
+    App\Command\AddDefaultTagCommand:
+        class: App\Command\AddDefaultTagCommand
+        public: true
+        tags: [ 'console.command' ]

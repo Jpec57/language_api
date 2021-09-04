@@ -39,7 +39,7 @@ class SRSCardRepository extends ServiceEntityRepository
         if (!empty($locales)){
             $params['locales'] = $locales;
             $params['locales2'] = $locales;
-            $qb = $qb->andWhere('c.cardLocale IN (:locales) OR c.translationLocale IN (:locales)');
+            $qb = $qb->andWhere('c.cardLocale IN (:locales) OR c.translationLocale IN (:locales2)');
         }
         $qb = $qb
             ->setParameters($params);

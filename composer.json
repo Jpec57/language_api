@@ -36,12 +36,12 @@
 		"symfony/yaml": "5.3.*"
 	},
 	"require-dev": {
+		"symfony/maker-bundle": "^1.32",
 		"dbrekelmans/bdi": "^0.3.0",
 		"doctrine/doctrine-fixtures-bundle": "^3.4",
 		"phpunit/phpunit": "^9.5",
 		"symfony/browser-kit": "^5.3",
 		"symfony/css-selector": "^5.3",
-		"symfony/maker-bundle": "^1.32",
 		"symfony/panther": "^1.0",
 		"symfony/phpunit-bridge": "^5.3",
 		"symfony/stopwatch": "^5.3",

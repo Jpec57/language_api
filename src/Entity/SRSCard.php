@@ -15,6 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"vocab_card" = "VocabCard"})
+ * @ORM\HasLifecycleCallbacks()
  */
 abstract class SRSCard
 {
@@ -64,6 +65,7 @@ abstract class SRSCard
     protected $user;
 
     /**
+     * @var Tag[]
      * @Groups({"srscard_tag"})
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="srsCards")
      */
@@ -210,5 +212,17 @@ abstract class SRSCard
             $this->errorCount += 1;
         }
         $this->nextAvailabilityDate = (new \DateTime())->modify($diff);
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function onCreation(): void
+    {
+        if ($this->tags){
+            foreach ($this->tags as $tag){
+                $tag->setLastUseDate(new \DateTime());
+            }
+        }
     }
 }

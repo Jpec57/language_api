@@ -42,4 +42,26 @@ class TagRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    public function findRecentTags(int $userId, array $locales = [])
+    {
+        $params = [
+            'userId' => $userId,
+        ];
+        $qb = $this->createQueryBuilder('t')
+            ->innerJoin('t.user', 'u')
+            ->innerJoin('t.srsCards', 'c')
+            ->andWhere('u.id = :userId');
+//        if (!empty($locales)){
+//            $params['locales'] = $locales;
+//            $qb = $qb->andWhere('t.');
+//        }
+        $qb = $qb
+            ->setParameters($params)
+            ->orderBy('t.lastUseDate', 'DESC')
+            ->setMaxResults(5)
+        ;
+        return $qb->getQuery()
+            ->getResult();
+    }
 }

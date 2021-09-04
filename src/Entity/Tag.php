@@ -43,10 +43,16 @@ class Tag
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
+    /**
+     * @Groups({"default"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastUseDate;
 
     public function __construct()
     {
         $this->srsCards = new ArrayCollection();
+        $this->lastUseDate = new \DateTime();
     }
 
     public function getId(): ?int
@@ -114,6 +120,24 @@ class Tag
     {
         $this->user = $user;
 
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastUseDate()
+    {
+        return $this->lastUseDate;
+    }
+
+    /**
+     * @param \DateTime $lastUseDate
+     * @return Tag
+     */
+    public function setLastUseDate($lastUseDate): Tag
+    {
+        $this->lastUseDate = $lastUseDate;
         return $this;
     }
 }

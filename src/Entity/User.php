@@ -311,10 +311,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function updateStreakAndReviewDate(): User
     {
         $now = new \DateTime();
-        $deadline = clone $this->lastReviewDate;
-        $deadline->modify('+1 day');
-        if ($this->lastReviewDate && ($deadline->getTimestamp()) > $now->getTimestamp()){
-            $this->streakDay = ($this->streakDay ?? 0) + 1;
+
+        if ($this->lastReviewDate){
+            $deadline = clone ($this->lastReviewDate);
+            $deadline->modify('+1 day');
+            if ($deadline->getTimestamp() > $now->getTimestamp()){
+                $this->streakDay = ($this->streakDay ?? 0) + 1;
+            } else {
+                $this->streakDay = 1;
+            }
         } else {
             $this->streakDay = 1;
         }

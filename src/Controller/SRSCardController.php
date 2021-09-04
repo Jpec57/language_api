@@ -130,6 +130,7 @@ class SRSCardController extends AbstractController
             return $this->json(['errors' => $this->getErrorsFromForm($form)], JsonResponse::HTTP_BAD_REQUEST);
         }
         $modifiedCards = $this->srsCardService->modifySrsCardsAccordingToReview($srsReview);
+        $viewer->updateStreakAndReviewDate();
         return $this->json($modifiedCards, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
     }
 }

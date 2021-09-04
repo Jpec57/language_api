@@ -78,11 +78,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $tags;
 
+    /**
+     * @var \DateTime
+     * @Groups({"default"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastReviewDate;
+
+    /**
+     * @Groups({"default"})
+     * @ORM\Column(type="int", nullable=true)
+     */
+    private $streakDay;
+
     #[Pure] public function __construct()
     {
         $this->apiTokens = new ArrayCollection();
         $this->srsCards = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->streakDay = 0;
     }
 
     public function getId(): ?int
@@ -252,6 +266,59 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastReviewDate()
+    {
+        return $this->lastReviewDate;
+    }
+
+    /**
+     * @param mixed $lastReviewDate
+     * @return User
+     */
+    public function setLastReviewDate($lastReviewDate)
+    {
+        $this->lastReviewDate = $lastReviewDate;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStreakDay(): int
+    {
+        return $this->streakDay;
+    }
+
+    /**
+     * @param int $streakDay
+     * @return User
+     */
+    public function setStreakDay($streakDay): User
+    {
+        $this->streakDay = $streakDay;
+        return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function updateStreakAndReviewDate(): User
+    {
+        $now = new \DateTime();
+        $deadline = clone $this->lastReviewDate;
+        $deadline->modify('+1 day');
+        if ($this->lastReviewDate && ($deadline->getTimestamp()) > $now->getTimestamp()){
+            $this->streakDay = ($this->streakDay ?? 0) + 1;
+        } else {
+            $this->streakDay = 1;
+        }
+        $this->lastReviewDate = new \DateTime();
         return $this;
     }
 }

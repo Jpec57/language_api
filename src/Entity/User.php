@@ -87,7 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @Groups({"default"})
-     * @ORM\Column(type="int", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $streakDay;
 

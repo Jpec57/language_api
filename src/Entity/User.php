@@ -318,7 +318,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $max = clone ($this->lastReviewDate);
             $max->modify('+2 day');
             //Already done a review today
-            if ($min->getTimestamp() < $now->getTimestamp()){
+            if ($min->getTimestamp() > $now->getTimestamp()){
                 // Last review was yesterday
             } elseif ($max->getTimestamp() > $now->getTimestamp()){
                 $this->streakDay = ($this->streakDay ?? 0) + 1;

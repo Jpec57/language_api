@@ -133,4 +133,18 @@ class SRSCardController extends AbstractController
         $modifiedCards = $this->srsCardService->modifySrsCardsAccordingToReview($srsReview);
         return $this->json($modifiedCards, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
     }
+
+    #[Route('/{cardId}', name: 'remove_srs_card', requirements: ['cardId' => '\d+'], methods: ["DELETE"])]
+    public function removeSrsCard(Request $request, int $cardId): Response
+    {
+        /** @var User $viewer */
+        $viewer = $this->getUser();
+        $card = $this->SRSCardRepository->find($cardId);
+        if ($card && $card->getUser()->getId() === $viewer->getId()){
+            $this->entityManager->remove($card);
+            $this->entityManager->flush();
+            return $this->json(["message" => "Deleted"], JsonResponse::HTTP_OK);
+        }
+        return $this->json(["message" => "Card not existing or not yours"], JsonResponse::HTTP_BAD_REQUEST);
+    }
 }

@@ -71,8 +71,8 @@ class VocabCardController extends AbstractController
         return $this->json($vocabCards, JsonResponse::HTTP_OK, [], ['groups' => ['default', 'srscard_user', 'srscard_tag']]);
     }
 
-    #[Route('/search', name: 'list_vocab_card2', methods: ["GET"])]
-    public function listCards2(Request $request): Response
+    #[Route('/search', name: 'search_vocab_card', methods: ["GET"])]
+    public function searchVocabCards(Request $request): Response
     {
         /** @var User $viewer */
         $viewer = $this->getUser();
@@ -80,5 +80,19 @@ class VocabCardController extends AbstractController
         $page = $request->get('page');
         $vocabCards = $this->SRSCardRepository->searchCards($viewer, null, $page, $limit);
         return $this->json($vocabCards, JsonResponse::HTTP_OK, [], ['groups' => ['default', 'srscard_user', 'srscard_tag']]);
+    }
+
+    #[Route('/{cardId}', name: 'modify_vocab_card', requirements: ['cardId' => '\d+'], methods: ["PATCH", "UPDATE"])]
+    public function modifyVocabCard(Request $request, int $cardId): Response
+    {
+        /** @var User $viewer */
+        $viewer = $this->getUser();
+        $card = $this->SRSCardRepository->find($cardId);
+        if (!$card || $card->getUser()->getId() !== $viewer->getId()){
+            return $this->json(["message" => "Card not existing or not yours"], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        $this->entityManager->flush();
+        return $this->json(["message" => "Deleted"], JsonResponse::HTTP_OK);
     }
 }

@@ -313,9 +313,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $now = new \DateTime();
 
         if ($this->lastReviewDate){
-            $deadline = clone ($this->lastReviewDate);
-            $deadline->modify('+1 day');
-            if ($deadline->getTimestamp() > $now->getTimestamp()){
+            $min = clone ($this->lastReviewDate);
+            $min->modify('+1 day');
+            $max = clone ($this->lastReviewDate);
+            $max->modify('+2 day');
+            //Already done a review today
+            if ($min->getTimestamp() < $now->getTimestamp()){
+                // Last review was yesterday
+            } elseif ($max->getTimestamp() > $now->getTimestamp()){
                 $this->streakDay = ($this->streakDay ?? 0) + 1;
             } else {
                 $this->streakDay = 1;

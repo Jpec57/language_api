@@ -20,20 +20,26 @@ class TagRepository extends ServiceEntityRepository
     }
 
     
-    public function findCardCountByTagAndUser(int $userId, bool $onlyToReview = false, array $locales = [])
+    public function findCardCountByTagAndUser(int $userId, array $locales = [])
     {
         $params = [
             'userId' => $userId,
+            'date' => new \DateTime()
         ];
+
+        $subQueryQb = $this->createQueryBuilder('it');
         $qb = $this->createQueryBuilder('t')
-            ->select('t as tag, COUNT(c) as count')
+            ->select('t as tag')
+            ->addSelect("(" .
+                $subQueryQb->select('COUNT(ic)')
+                    ->innerJoin('it.srsCards', 'ic')
+                    ->andWhere('ic.nextAvailabilityDate <= :date')
+                    ->andWhere("it.id = t.id")
+                    ->getDQL() . ") AS reviewCount"
+            )
             ->innerJoin('t.user', 'u')
-            ->innerJoin('t.srsCards', 'c')
+            ->join('t.srsCards', 'c')
             ->andWhere('u.id = :userId');
-        if ($onlyToReview){
-            $params['date'] = new \DateTime();
-            $qb = $qb->andWhere('c.nextAvailabilityDate <= :date');
-        }
         if (!empty($locales)){
             $params['locales1'] = $locales;
             $params['locales2'] = $locales;
@@ -44,8 +50,7 @@ class TagRepository extends ServiceEntityRepository
             ->groupBy('t.id')
             ->orderBy('t.label', 'ASC');
         return $qb->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     public function findRecentTags(int $userId, array $locales = [])

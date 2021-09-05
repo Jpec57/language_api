@@ -22,6 +22,6 @@ class UserController extends AbstractController
     public function index(): Response
     {
         $viewer = $this->getUser();
-        return $this->json($viewer);
+        return $this->json($viewer, JsonResponse::HTTP_OK, [], ['groups'=> ['default']]);
     }
 }

@@ -290,7 +290,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return int
      */
-    public function getStreakDay(): int
+    public function getStreakDay()
     {
         return $this->streakDay;
     }

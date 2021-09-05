@@ -39,13 +39,15 @@ class AddDefaultTagCommand extends Command
             if (empty($card->getTags())){
                 $io->caution("Card with empty tag");
                 $user = $card->getUser();
-                $defaultTag = $this->tagRepository->findOneBy(['user'=> $user, 'label'=> "default"]);
-                if (!$defaultTag){
+                $defaultTag = $this->tagRepository->findByLabelsAndLocalesForUser($user->getId(), ["default"], [$card->getCardLocale(), $card->getTranslationLocale()]);
+                if (!$defaultTag || empty($defaultTag)){
                     $defaultTag = new Tag();
                     $defaultTag->setLabel("default")
                         ->setUser($user);
                     $this->entityManager->persist($defaultTag);
                     $io->note("Creating default tag");
+                } else {
+                    $defaultTag = $defaultTag[0];
                 }
                 $card->addTag($defaultTag);
                 $this->entityManager->flush();

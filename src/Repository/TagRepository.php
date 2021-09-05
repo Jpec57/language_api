@@ -20,7 +20,7 @@ class TagRepository extends ServiceEntityRepository
     }
 
     
-    public function findCardCountByTagAndUser(int $userId, bool $onlyToReview = false)
+    public function findCardCountByTagAndUser(int $userId, bool $onlyToReview = false, array $locales = [])
     {
         $params = [
             'userId' => $userId,
@@ -33,6 +33,11 @@ class TagRepository extends ServiceEntityRepository
         if ($onlyToReview){
             $params['date'] = new \DateTime();
             $qb = $qb->andWhere('c.nextAvailabilityDate <= :date');
+        }
+        if (!empty($locales)){
+            $params['locales1'] = $locales;
+            $params['locales2'] = $locales;
+            $qb = $qb->andWhere('t.locale1 IN (:locales1) AND t.locale2 IN (:locales2)');
         }
         $qb = $qb
             ->setParameters($params)
@@ -52,16 +57,51 @@ class TagRepository extends ServiceEntityRepository
             ->innerJoin('t.user', 'u')
             ->innerJoin('t.srsCards', 'c')
             ->andWhere('u.id = :userId');
-//        if (!empty($locales)){
-//            $params['locales'] = $locales;
-//            $qb = $qb->andWhere('t.');
-//        }
+        if (!empty($locales)){
+            $params['locales1'] = $locales;
+            $params['locales2'] = $locales;
+            $qb = $qb->andWhere('t.locale1 IN (:locales1) AND t.locale2 IN (:locales2)');
+        }
         $qb = $qb
             ->setParameters($params)
             ->orderBy('t.lastUseDate', 'DESC')
             ->setMaxResults(5)
         ;
         return $qb->getQuery()
+            ->getResult();
+    }
+
+    public function findForUser(int $userId, array $locales = []){
+        $params = [
+            'userId' => $userId,
+        ];
+        $qb = $this->createQueryBuilder('t')
+            ->andWhere('t.user = :userId');
+        if (!empty($locales)){
+            $params['locales1'] = $locales;
+            $params['locales2'] = $locales;
+            $qb = $qb->andWhere('t.locale1 IN (:locales1) AND t.locale2 IN (:locales2)');
+        }
+        $qb = $qb
+            ->setParameters($params);
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByLabelsAndLocalesForUser(int $userId, array $labels, array $locales){
+        $qb = $this->createQueryBuilder('t')
+            ->andWhere('t.user = :userId')
+            ->andWhere('t.label IN (:labels)')
+            ->andWhere('t.locale1 IN (:locales1) AND t.locale2 IN (:locales2)')
+            ->setParameters([
+                'userId' => $userId,
+                'labels' => $labels,
+                'locales1' => $locales,
+                'locales2' => $locales
+            ]);
+        return $qb
+            ->getQuery()
             ->getResult();
     }
 }

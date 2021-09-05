@@ -22,15 +22,16 @@ class TagService
         $this->tagRepository = $tagRepository;
     }
 
-    public function getOrCreateTagFromLabels(User $viewer, array $tags): array
+    public function getOrCreateTagFromLabels(User $viewer, array $tags, array $locales): array
     {
         $tags = array_unique($tags);
+        if (count($locales) < 2){
+            throw new \RuntimeException("You have to provide at least two locales");
+        }
         if (empty($tags)){
             $tags = ["default"];
         }
-        /** @var Tag[] $existingTags */
-        $existingTags = $this->entityManager->getRepository(Tag::class)
-            ->findBy(['label' => $tags, 'user' => $viewer]);
+        $existingTags = $this->tagRepository->findByLabelsAndLocalesForUser($viewer->getId(), $tags, $locales);
         $existingTagLabels = [];
         foreach ($existingTags as $existingTag){
             $existingTagLabels[] = $existingTag->getLabel();
@@ -41,6 +42,8 @@ class TagService
                     $newTag = new Tag();
                     $newTag->setUser($viewer);
                     $newTag->setLabel($tag);
+                    $newTag->setLocale1($locales[0]);
+                    $newTag->setLocale2($locales[1]);
                     $this->entityManager->persist($newTag);
                     $existingTags[] = $newTag;
                 }

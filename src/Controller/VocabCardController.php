@@ -51,7 +51,8 @@ class VocabCardController extends AbstractController
         }
         /** @var VocabCard $vocabCard */
         $vocabCard = $form->getData();
-        $associatedTags = $this->tagService->getOrCreateTagFromLabels($viewer, $tags);
+        $locales = [$vocabCard->getCardLocale(), $vocabCard->getTranslationLocale()];
+        $associatedTags = $this->tagService->getOrCreateTagFromLabels($viewer, $tags, $locales);
         $vocabCard->setTags($associatedTags);
         $this->entityManager->persist($vocabCard);
         $reverseCard = $vocabCard->createReversedCard();

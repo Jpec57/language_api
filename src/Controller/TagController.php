@@ -21,11 +21,12 @@ class TagController extends AbstractController
     }
 
     #[Route('/', name: 'list_tags')]
-    public function homepage(): Response
+    public function getTagList(Request $request): Response
     {
         /** @var User $viewer */
         $viewer = $this->getUser();
-        $tags = $viewer->getTags();
+        $locales = $request->get('locales', []);
+        $tags = $this->tagRepository->findForUser($viewer->getId(), $locales);
         return $this->json($tags, JsonResponse::HTTP_OK, [], ['groups'=> ['default']]);
     }
 
@@ -34,7 +35,8 @@ class TagController extends AbstractController
     {
         /** @var User $viewer */
         $viewer = $this->getUser();
-        $tags = $this->tagRepository->findCardCountByTagAndUser($viewer->getId(), true);
+        $locales = $request->get('locales', []);
+        $tags = $this->tagRepository->findCardCountByTagAndUser($viewer->getId(), true, $locales);
         return $this->json($tags, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
     }
 }

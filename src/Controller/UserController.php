@@ -9,13 +9,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
-    #[Route('/test', name: 'test')]
-    public function test(): Response
-    {
-        return new JsonResponse([
-            'message' => "Hello from learning-language :D"
-        ]);
-    }
 
     #[Route('/', name: 'homepage')]
     public function homepage(): Response

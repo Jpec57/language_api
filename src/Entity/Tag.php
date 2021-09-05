@@ -49,6 +49,20 @@ class Tag
      */
     private $lastUseDate;
 
+    /**
+     * @var string
+     * @Groups({"default"})
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $locale1;
+
+    /**
+     * @var string
+     * @Groups({"default"})
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $locale2;
+
     public function __construct()
     {
         $this->srsCards = new ArrayCollection();
@@ -138,6 +152,42 @@ class Tag
     public function setLastUseDate($lastUseDate): Tag
     {
         $this->lastUseDate = $lastUseDate;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocale1()
+    {
+        return $this->locale1;
+    }
+
+    /**
+     * @param string $locale1
+     * @return Tag
+     */
+    public function setLocale1($locale1): Tag
+    {
+        $this->locale1 = $locale1;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocale2()
+    {
+        return $this->locale2;
+    }
+
+    /**
+     * @param string $locale2
+     * @return Tag
+     */
+    public function setLocale2($locale2): Tag
+    {
+        $this->locale2 = $locale2;
         return $this;
     }
 }

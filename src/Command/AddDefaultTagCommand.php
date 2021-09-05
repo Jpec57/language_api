@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'add-default-tag',
+    name: 'app:add-default-tag',
     description: 'Add "Default" tag',
 )]
 class AddDefaultTagCommand extends Command
@@ -35,14 +35,17 @@ class AddDefaultTagCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $cards = $this->vocabCardRepository->findAll();
+        $io->info( count($cards) . ' cards');
         foreach ($cards as $card){
-            if (empty($card->getTags())){
+            if (is_null($card->getTags()) || empty($card->getTags()) || count($card->getTags()) < 1){
                 $io->caution("Card with empty tag");
                 $user = $card->getUser();
                 $defaultTag = $this->tagRepository->findByLabelsAndLocalesForUser($user->getId(), ["default"], [$card->getCardLocale(), $card->getTranslationLocale()]);
                 if (!$defaultTag || empty($defaultTag)){
                     $defaultTag = new Tag();
                     $defaultTag->setLabel("default")
+                        ->setLocale1($card->getCardLocale())
+                        ->setLocale2($card->getTranslationLocale())
                         ->setUser($user);
                     $this->entityManager->persist($defaultTag);
                     $io->note("Creating default tag");
@@ -51,6 +54,13 @@ class AddDefaultTagCommand extends Command
                 }
                 $card->addTag($defaultTag);
                 $this->entityManager->flush();
+            } else {
+                $tags = $card->getTags();
+                $tagStr = "";
+                foreach ($tags as $tag){
+                    $tagStr .= $tag->getId() . " " .$tag->getLabel() . "\n";
+                }
+                $io->info( $card->getWordToTranslate() . ' with TAGS ' . $tagStr);
             }
         }
 

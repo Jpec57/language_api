@@ -315,8 +315,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->lastReviewDate){
             $min = clone ($this->lastReviewDate);
             $min->modify('+1 day');
-            $max = clone ($this->lastReviewDate);
-            $max->modify('+2 day');
+            $min->setTime(0, 0, 0);
+            $max = clone ($min);
+            $max->modify('+1 day');
             //Already done a review today
             if ($min->getTimestamp() > $now->getTimestamp()){
                 // Last review was yesterday

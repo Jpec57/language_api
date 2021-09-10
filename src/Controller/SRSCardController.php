@@ -105,6 +105,15 @@ class SRSCardController extends AbstractController
         return $this->json($cards, JsonResponse::HTTP_OK, [], ['groups' => ['default']]);
     }
 
+    #[Route('/review/count/summary', name: 'get_review_srs_card_count_summary', methods: ["GET"])]
+    public function getReviewSRSCardCountSummaryAction(Request $request): Response
+    {
+        /** @var User $viewer */
+        $viewer = $this->getUser();
+        $cards = $this->vocabCardRepo->findAvailableCardCountSummary($viewer, new \DateTime());
+        return $this->json($cards, JsonResponse::HTTP_OK);
+    }
+
     #[Route('/review/count', name: 'get_review_srs_card_count', methods: ["GET"])]
     public function getReviewSRSCardCountAction(Request $request): Response
     {

@@ -28,6 +28,24 @@ trait SrsRepositoryTrait
             ->getSingleResult();
     }
 
+        public function findAvailableCardCountSummary(User $user, \DateTime $date)
+    {
+        $params = [
+            'date' => $date,
+            'user' => $user,
+        ];
+        $qb = $this->createQueryBuilder('c')
+            ->select('COUNT(c.id) as count, CONCAT(CONCAT(c.cardLocale, \'|\'), c.translationLocale) as localeRef')
+            ->andWhere('c.nextAvailabilityDate <= :date')
+            ->andWhere('c.user = :user');
+        $qb
+            ->setParameters($params)
+            ->groupBy('localeRef');
+            return $qb->getQuery()
+            ->getResult();
+    }
+    
+
     public function findAvailableCards(User $user, \DateTime $date, array $locales = [])
     {
         $params = [

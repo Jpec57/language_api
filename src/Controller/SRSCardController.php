@@ -156,4 +156,17 @@ class SRSCardController extends AbstractController
         }
         return $this->json(["message" => "Card not existing or not yours"], JsonResponse::HTTP_BAD_REQUEST);
     }
+
+    #[Route('/{cardId}', name: 'get_srs_card', requirements: ['cardId' => '\d+'], methods: ["GET"])]
+    public function getSrsCard(Request $request, int $cardId): Response
+    {
+        /** @var User $viewer */
+        $viewer = $this->getUser();
+        $card = $this->SRSCardRepository->find($cardId);
+        if (!$card || $card->getUser()->getId() !== $viewer->getId()){
+            return $this->json(["message" => "Card not existing or not yours"], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        return $this->json($card, JsonResponse::HTTP_OK, [], ['groups' => ['default', 'srscard_user', 'srscard_tag']]);
+    }
 }

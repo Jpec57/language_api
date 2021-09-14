@@ -82,6 +82,19 @@ class VocabCardController extends AbstractController
         return $this->json($vocabCards, JsonResponse::HTTP_OK, [], ['groups' => ['default', 'srscard_user', 'srscard_tag']]);
     }
 
+    #[Route('/{cardId}', name: 'get_vocab_card', requirements: ['cardId' => '\d+'], methods: ["GET"])]
+    public function getVocabCard(Request $request, int $cardId): Response
+    {
+        /** @var User $viewer */
+        $viewer = $this->getUser();
+        $card = $this->SRSCardRepository->find($cardId);
+        if (!$card || $card->getUser()->getId() !== $viewer->getId()){
+            return $this->json(["message" => "Card not existing or not yours"], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        return $this->json($card, JsonResponse::HTTP_OK, [], ['groups' => ['default', 'srscard_user', 'srscard_tag']]);
+    }
+
     #[Route('/{cardId}', name: 'modify_vocab_card', requirements: ['cardId' => '\d+'], methods: ["PATCH", "UPDATE"])]
     public function modifyVocabCard(Request $request, int $cardId): Response
     {

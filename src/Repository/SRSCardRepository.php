@@ -30,6 +30,7 @@ class SRSCardRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c')
             ->leftJoin('c.user', 'u')
             ->andWhere('u.id = :userId')
+            ->andWhere('c.isActivated = 1')
             ->innerJoin('c.tags','tags')
             ->andWhere('tags IN (:tags)');
         if ($onlyToReview){

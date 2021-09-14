@@ -16,6 +16,7 @@ trait SrsRepositoryTrait
         $qb = $this->createQueryBuilder('c')
             ->select('COUNT(c.id) as count')
             ->andWhere('c.nextAvailabilityDate <= :date')
+            ->andWhere('c.isActivated = 1')
             ->andWhere('c.user = :user');
         if (!empty($locales)) {
             $params['locales'] = $locales;
@@ -37,6 +38,7 @@ trait SrsRepositoryTrait
         $qb = $this->createQueryBuilder('c')
             ->select('COUNT(c.id) as count, CONCAT(CONCAT(c.cardLocale, \'|\'), c.translationLocale) as localeRef')
             ->andWhere('c.nextAvailabilityDate <= :date')
+            ->andWhere('c.isActivated = 1')
             ->andWhere('c.user = :user');
         $qb
             ->setParameters($params)
@@ -55,6 +57,7 @@ trait SrsRepositoryTrait
 
         $qb = $this->createQueryBuilder('c')
             ->andWhere('c.nextAvailabilityDate <= :date')
+            ->andWhere('c.isActivated = 1')
             ->andWhere('c.user = :user');
         if (!empty($locales)) {
             $params['locales'] = $locales;

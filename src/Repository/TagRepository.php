@@ -33,13 +33,13 @@ class TagRepository extends ServiceEntityRepository
             ->addSelect("(" .
                 $subQueryQb->select('COUNT(ic)')
                     ->innerJoin('it.srsCards', 'ic')
+                    ->andWhere('ic.isActivated = 1')
                     ->andWhere('ic.nextAvailabilityDate <= :date')
                     ->andWhere("it.id = t.id")
                     ->getDQL() . ") AS reviewCount"
             )
             ->innerJoin('t.user', 'u')
             ->join('t.srsCards', 'c')
-            ->andWhere('c.isActivated = 1')
             ->andWhere('u.id = :userId');
         if (!empty($locales)){
             $params['locales1'] = $locales;

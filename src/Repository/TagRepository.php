@@ -39,6 +39,7 @@ class TagRepository extends ServiceEntityRepository
             )
             ->innerJoin('t.user', 'u')
             ->join('t.srsCards', 'c')
+            ->andWhere('c.isActivated = 1')
             ->andWhere('u.id = :userId');
         if (!empty($locales)){
             $params['locales1'] = $locales;

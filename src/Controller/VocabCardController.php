@@ -76,9 +76,10 @@ class VocabCardController extends AbstractController
     {
         /** @var User $viewer */
         $viewer = $this->getUser();
-        $limit = $request->get('limit');
-        $page = $request->get('page');
-        $vocabCards = $this->SRSCardRepository->searchCards($viewer, null, $page, $limit);
+        $limit = (int)($request->get('limit', 10));
+        $page = (int)$request->get('page', 0);
+        $term = $request->get('term');
+        $vocabCards = $this->SRSCardRepository->searchCards($viewer, VocabCard::class, $page, $limit, $term);
         return $this->json($vocabCards, JsonResponse::HTTP_OK, [], ['groups' => ['default', 'srscard_user', 'srscard_tag']]);
     }
 

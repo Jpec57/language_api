@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\SRSCard;
+use App\Entity\VocabCard;
 use App\Entity\User;
+use App\Repository\VocabCardRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -48,18 +50,29 @@ class SRSCardRepository extends ServiceEntityRepository
     }
 
 
-    public function searchCards(User $viewer, ?string $type = null, int $page = 0, int $limit = 10)
+    public function searchCards(User $viewer, string $type, int $page = 0, int $limit = 10, ?string $term = null)
     {
         $params = [
             'viewer' => $viewer
         ];
-        $qb = $this->createQueryBuilder('c')
+        
+        $qb = 
+        $this->getEntityManager()
+            ->getRepository($type)
+            ->createQueryBuilder('c')
             ->where('c.user = :viewer');
-        if ($type) {
-            $qb = $qb
-                ->andWhere('c.type = :type');
-        }
+        // if ($type) {
+        //     $qb = $qb
+        //         ->andWhere('c.type = :type');
+        //     $params['type'] = $type;
+        // }
 
+        if ($term){
+            $qb = $qb
+                ->andWhere('c.wordToTranslate = :term OR c.translations LIKE :term2');
+            $params['term'] = $term;
+            $params['term2'] = "%$term%";
+        }
         $qb
             ->setParameters($params)
             ->setFirstResult($page * $limit)

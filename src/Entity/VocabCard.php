@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=VocabCardRepository::class)
@@ -15,7 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource]
 class VocabCard extends SRSCard
 {
-
+    #[Assert\NotBlank]
     /**
      * @Groups({"default"})
      * @ORM\Column(type="string", length=255)
@@ -52,12 +53,14 @@ class VocabCard extends SRSCard
      */
     private $userNotes;
 
+    #[Assert\NotBlank]
     /**
      * @Groups({"default"})
      * @ORM\Column(type="string", length=5)
      */
     private $translationLocale;
 
+    #[Assert\NotBlank]
     /**
      * @Groups({"default"})
      * @ORM\Column(type="string", length=5)
@@ -123,7 +126,7 @@ class VocabCard extends SRSCard
         return $this->wordToTranslate;
     }
 
-    public function setWordToTranslate(string $wordToTranslate): self
+    public function setWordToTranslate(?string $wordToTranslate): self
     {
         $this->wordToTranslate = $wordToTranslate;
 
@@ -195,7 +198,7 @@ class VocabCard extends SRSCard
         return $this->translationLocale;
     }
 
-    public function setTranslationLocale(string $translationLocale): self
+    public function setTranslationLocale(?string $translationLocale): self
     {
         $this->translationLocale = $translationLocale;
 
@@ -207,7 +210,7 @@ class VocabCard extends SRSCard
         return $this->cardLocale;
     }
 
-    public function setCardLocale(string $cardLocale): self
+    public function setCardLocale(?string $cardLocale): self
     {
         $this->cardLocale = $cardLocale;
 

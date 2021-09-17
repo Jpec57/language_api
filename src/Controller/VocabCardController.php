@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/vocab-cards')]
 class VocabCardController extends AbstractController
@@ -24,15 +25,17 @@ class VocabCardController extends AbstractController
     private EntityManagerInterface $entityManager;
     private VocabCardRepository $vocabCardRepository;
     private SRSCardRepository $SRSCardRepository;
+    private ValidatorInterface $validator;
     private TagService $tagService;
     use FormValidationTrait;
 
-    public function __construct(TagService $tagService, EntityManagerInterface $entityManager, VocabCardRepository $vocabCardRepository, SRSCardRepository $SRSCardRepository)
+    public function __construct(ValidatorInterface $validator, TagService $tagService, EntityManagerInterface $entityManager, VocabCardRepository $vocabCardRepository, SRSCardRepository $SRSCardRepository)
     {
         $this->entityManager = $entityManager;
         $this->vocabCardRepository = $vocabCardRepository;
         $this->SRSCardRepository = $SRSCardRepository;
         $this->tagService = $tagService;
+        $this->validator = $validator;
     }
 
 
@@ -96,7 +99,7 @@ class VocabCardController extends AbstractController
         return $this->json($card, JsonResponse::HTTP_OK, [], ['groups' => ['default', 'srscard_user', 'srscard_tag']]);
     }
 
-    #[Route('/{cardId}', name: 'modify_vocab_card', requirements: ['cardId' => '\d+'], methods: ["PATCH", "UPDATE"])]
+    #[Route('/{cardId}', name: 'modify_vocab_card', requirements: ['cardId' => '\d+'], methods: ["PATCH", "PUT"])]
     public function modifyVocabCard(Request $request, int $cardId): Response
     {
         /** @var User $viewer */
@@ -105,8 +108,15 @@ class VocabCardController extends AbstractController
         if (!$card || $card->getUser()->getId() !== $viewer->getId()){
             return $this->json(["message" => "Card not existing or not yours"], JsonResponse::HTTP_BAD_REQUEST);
         }
-
+        $clearMissing = $request->getMethod() != 'PATCH';
+        $data = json_decode($request->getContent(), true);
+        $form = $this->createForm(VocabCardType::class, $card);
+        $form->submit($data, $clearMissing);
+        $errors = $this->validator->validate($card);
+        if (count($errors) > 0) {
+            return $this->json($errors, JsonResponse::HTTP_BAD_REQUEST);
+        }
         $this->entityManager->flush();
-        return $this->json(["message" => "Deleted"], JsonResponse::HTTP_OK);
+        return $this->json($card, JsonResponse::HTTP_OK, [], ['groups' => ['default', 'srscard_user', 'srscard_tag']]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Entity\User;
+use Exception;
 
 trait SrsRepositoryTrait
 {
@@ -25,11 +26,11 @@ trait SrsRepositoryTrait
         }
         $qb
             ->setParameters($params);
-            return $qb->getQuery()
+        return $qb->getQuery()
             ->getSingleResult();
     }
 
-        public function findAvailableCardCountSummary(User $user, \DateTime $date)
+    public function findAvailableCardCountSummary(User $user, \DateTime $date)
     {
         $params = [
             'date' => $date,
@@ -43,11 +44,13 @@ trait SrsRepositoryTrait
         $qb
             ->setParameters($params)
             ->groupBy('localeRef');
-            return $qb->getQuery()
+        return $qb->getQuery()
             ->getResult();
     }
-    
 
+    /**
+     * Goal locale is second param
+     */
     public function findAvailableCards(User $user, \DateTime $date, array $locales = [])
     {
         $params = [
@@ -56,18 +59,38 @@ trait SrsRepositoryTrait
         ];
 
         $qb = $this->createQueryBuilder('c')
+
+            ->select("c as card")
             ->andWhere('c.nextAvailabilityDate <= :date')
             ->andWhere('c.isActivated = 1')
             ->andWhere('c.user = :user');
         if (!empty($locales)) {
             $params['locales'] = $locales;
             $params['locales2'] = $locales;
+            try {
+                $len = strlen($locales[1]);
+                if ($len > 4 || ($len == 4 && false === strpos($locales[1], "_"))) {
+                    throw new Exception("Hop hop hop, i am not safe but not dumb.");
+                }
+                $qb = $qb->addSelect('(CASE WHEN c.cardLocale = \'' . $locales[1] . '\' THEN 1 ELSE 0 END) AS to');
+                $qb = $qb->addOrderBy('to', 'ASC');
+            } catch (Exception $e) {
+            }
+
+
             $qb = $qb->andWhere('c.cardLocale IN (:locales) AND c.translationLocale IN (:locales2)');
         }
         $qb
-            ->setParameters($params);
-        return $qb->getQuery()
-            ->getResult();
+            ->setParameters($params)
+            // ->orderBy('')
+        ;
+        $res = $qb->getQuery()
+            ->getArrayResult();
+        $arr = [];
+        foreach ($res as $item) {
+            $arr[] = $item["card"];
+        }
+        return $arr;
     }
 
     public function findAwaitingCards(User $viewer, array $locales = [])

@@ -28,17 +28,6 @@ services:
     ports:
       - "5500:3306"
 
-#  phpmyadmin:
-#    image: phpmyadmin
-#    container_name: ll_phpmyadmin
-#    restart: always
-#    depends_on:
-#      - ll_dbc
-#    ports:
-#      - 8080:80
-#    environment:
-#      PMA_HOST: db
-
   nginx:
     image: nginx:1.15.3-alpine
     container_name: ll_web
